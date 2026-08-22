@@ -1,0 +1,42 @@
+# 数字非遗·暗夜流光 参考卡
+
+- 来源：`teamlab.art`（近黑底 + 全幅沉浸影像 + 极薄 UI）、`hkpm.org.hk`（黑底文物聚光摄影 + 金 accent）、`artic.edu`（单 accent 贯穿用法，绯红 #B50938 实测）、`mplus.org.hk`（全幅视频 hero + 巨无衬线标题）；**反例**：`ihchina.cn`（老气构成分析见禁忌栏）。提取截图存 `refs/digital-heritage-immersive/`（2026-08-22）
+- 气质关键词：暗夜、文物聚光、沉浸影像、一个朱砂、呼吸留白
+- 适用：非遗/文博/文化数字化/展馆触屏大屏/文化科技品牌首页；「新时代非遗」「数字+科技传承」诉求
+- 不适用：快消/母婴/轻快生活方式（黑底压不住）；高信息密度的政务资讯列表页（全幅影像与列表天生冲突）
+
+## 色板（带角色，不临场发明新色）
+- BG: `#0E0F0E` — 近黑（teamLab 实测值，带一丝灰绿，不是纯黑——纯黑在大屏上显脏）
+- INK: `#F2EFE9` — 暖白（展签宣纸感，禁纯白长文）
+- ACCENT: `#C8391F` — 朱砂，唯一强调色（从 AIC 绯红 #B50938 向暖调偏移；编号、关键词、CTA 描边、当前态）
+- MUTED: `rgba(242,239,233,0.55)`
+- HAIRLINE: `rgba(242,239,233,0.14)`
+
+## 字体配对
+- Display 中文: Noto Serif SC 900（fallback Songti SC/STSong）— 黑底宋体大标题 = 碑刻感，clamp(72px, 12vw, 180px)
+- Label/Mono: JetBrains Mono 300 uppercase + tracking 0.2em — 展签、编号、参数行、数据
+- 正文: Noto Sans SC 400，1.9 行高——黑底正文用无衬线，宋体长文糊
+
+## 签名交互
+- 机制：**文物聚光 spotlight**。展品图整体压暗至 `brightness(0.35)`，一个 radial-gradient 光斑（边缘 feather 60%）跟随指针/触摸点，rAF + LERP 平滑；光斑内图恢复 `brightness(1)`，光斑外沉回黑暗——观众用手「点亮」文物，这就是「数字+传承」的交互隐喻
+- 参数：`SPOT_R=320px`（75 寸触屏放大到 480px）、`LERP=0.08`、`DIM=0.35`、feather 60%
+- 待机变体（无指针环境）：光斑沿预设路径自动缓慢游走，或换 `assets/snippets/bg-flow-field` 粒子流做吸引态
+
+## 排版节奏
+- 全幅出血影像打底，UI 退到 hairline 和 mono 小字（学 teamLab：作品即界面）
+- 内容块 max 1200px **偏左**对齐（反对称）；section 分隔 = hairline + 大字编号「壹/贰/叁」或 mono `01/02/03`
+- 展签式参数行沿用新中式卡的 hairline 行式表（hover 朱砂 6% 底）
+- M+ 式巨型短句标题可用在 hero：一行不超过 8 字，两行以内
+- **黑底巨标题主动断行，不依赖自动折行**：8 字标题按 4+4 拆两行（上行 INK、下行 ACCENT），各加 `white-space:nowrap`——首单实测自动折行必孤字（「谱」字单挂一行，2026-08-22 `~/landing-heritage-test/`）
+
+## 图像处理
+- 文物/非遗图一律 chiaroscuro：黑底拍摄或后期压暗，单一光源感；禁白底证件照式摆拍
+- 全幅出血，不加圆角不加边框；hover/触摸 `scale(1.03)` 图内缩放
+- 生成图提示词落点：「single artifact on pure black background, single dramatic spotlight, museum chiaroscuro, dark moody」（Ark/codex 生图均适用）
+
+## 禁忌（这个方向做了就破功的事）
+- **禁传统纹样当壁纸铺满**——ihchina.cn 老气的第一构成就是祥云/刺绣/回纹无层次堆满屏。纹样只能作为「一件展品的内容」出现（某件织绣的局部特写），永远不当装饰背景
+- **禁符号堆砌**：印章 + 农历条 + 毛笔字 Logo + 云纹边框同时出现 = 政务老干部风。这类符号全场最多保留一个，且必须重新设计过
+- **禁居中对称的奖状式构图**——一律偏轴、留出一侧呼吸
+- **禁多色并用**：金 + 红 + 石青一起上立即回到老气；accent 只有朱砂一个，金色只允许出现在文物照片本身的材质里
+- **禁黑底暗金小字长文**——可读性崩；正文必须暖白

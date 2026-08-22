@@ -9,6 +9,14 @@
 - `mobbin.com/mcp` — Mobbin MCP，面向 AI agent 的设计参考库（真实 App/Web 截图流）
 - `seesaw.website` — SEE·SAW，设计工程灵感画廊（按 Agency/AI/Crypto/Design Tools 分类，viktoroddy 视频实测使用的灵感源）
 
+### 文化机构 / 博物馆（数字非遗方向提取源，2026-08-22 建卡实测）
+
+- `teamlab.art` — teamLab，暗夜沉浸影像的天花板（近黑 #0E0F0E、全幅出血、UI 极薄）
+- `hkpm.org.hk` — 香港故宫文化博物馆，黑底文物聚光摄影 + 单 accent（⚠️ 首屏加载偶发 30s 超时，截图前多等）
+- `artic.edu` — 芝加哥艺术博物馆，亮底 editorial + 绯红 #B50938 单 accent 的教科书用法
+- `mplus.org.hk` — M+ 当代视觉文化博物馆，全幅视频 hero + 巨型短句标题 + 三色品牌条（进页有 cookie 弹窗 + loading 屏）
+- `ihchina.cn` — 中国非遗网，**反例源**：「老气」的具体构成（纹样铺满/符号堆砌/居中对称），建禁忌栏时对照用
+
 ## AI 代码（构建辅助 / 对标）
 
 - `code.minimax.io` — MiniMax Agent，AI 构建工具（对标参考：同类产品的落地页怎么做）
