@@ -1,0 +1,71 @@
+<!-- ============================================================
+  preloader.html — 品牌化加载器（landing-craft 签名交互片段）
+  用途：重资产页（大图/视频 hero）的加载等待做成设计内容，消灭白屏
+  来源：heart-ui.vercel.app（Heart Blooms「Warming the render pipeline · 96%」）
+        × robot-game-3d-sq5l.vercel.app（Your Robots「SYSTEM BOOT · SYSTEM READY 100%」）
+  参数表（按 spec 改）：
+    --BG / --INK      底色与墨色，从参考卡色板取
+    LABEL_TL/TR/BL    三角落 mono 大写小字（品牌名 / 分类 / 状态语）
+    TITLE             中央品牌短语，如「Experience ready」
+    MIN_MS            最短展示时长（默认 1400；小于 800 会显得闪烁）
+    EASE              计数与进度条缓动，默认 cubic-bezier(0.16,1,0.3,1)
+  ?shot=1 规则：加载器立即隐藏、body 直接带 .ready（页面终态），三路保证：
+    JS 短路 + html.shot CSS 覆写 + 不注册监听。
+  已知坑：
+    - 加载器淡出和首屏入场编排要接力（监听 'loader:done' 再启动入场），
+      别两边各设 setTimeout 赌时序
+    - 真实加载进度不可靠时，用「真实 progress 与匀速假进度取 max」的混合驱动，
+      保证进度条只前进不后退
+============================================================ -->
+<style>
+#preloader{position:fixed;inset:0;z-index:9999;background:var(--BG,#0B0D1A);color:var(--INK,#E8E6DF);
+  font-family:"JetBrains Mono",Menlo,monospace;display:flex;align-items:center;justify-content:center;
+  transition:opacity .7s cubic-bezier(0.16,1,0.3,1),visibility .7s}
+#preloader.done{opacity:0;visibility:hidden}
+#preloader .pl-corner{position:absolute;font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.55}
+#preloader .pl-tl{top:28px;left:32px}#preloader .pl-tr{top:28px;right:32px}#preloader .pl-bl{bottom:28px;left:32px}
+#preloader .pl-center{text-align:center}
+#preloader .pl-title{font-size:22px;letter-spacing:.02em;margin-bottom:10px}
+#preloader .pl-sub{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.55}
+#preloader .pl-bar{position:absolute;left:32px;right:32px;bottom:64px;height:1px;background:color-mix(in srgb,currentColor 18%,transparent)}
+#preloader .pl-bar i{display:block;height:100%;width:0;background:currentColor;transition:width .25s cubic-bezier(0.16,1,0.3,1)}
+#preloader .pl-pct{position:absolute;right:32px;bottom:76px;font-size:44px;font-weight:300;letter-spacing:-.02em}
+#preloader .pl-pct small{font-size:16px;opacity:.5}
+html.shot #preloader{display:none}
+</style>
+<div id="preloader" aria-hidden="true">
+  <span class="pl-corner pl-tl">BRAND NAME®</span>
+  <span class="pl-corner pl-tr">©2026</span>
+  <span class="pl-corner pl-bl">HIGH-FIDELITY ASSETS</span>
+  <div class="pl-center">
+    <div class="pl-title">Experience ready</div>
+    <div class="pl-sub">Warming the render pipeline</div>
+  </div>
+  <div class="pl-bar"><i></i></div>
+  <div class="pl-pct">0<small>%</small></div>
+</div>
+<script>
+(() => {
+  if (new URLSearchParams(location.search).has('shot')) return;   // ?shot=1 短路：不跑加载器
+  const el = document.getElementById('preloader'); if (!el) return;
+  document.body.style.overflow = 'hidden';
+  const MIN_MS = 1400, bar = el.querySelector('.pl-bar i'), pct = el.querySelector('.pl-pct');
+  let real = 0, shown = 0;                                       // real=真实加载, shown=展示值
+  addEventListener('load', () => real = 100, { once: true });
+  const t0 = performance.now();
+  (function tick() {
+    const fake = Math.min(99, (performance.now() - t0) / MIN_MS * 100);   // 匀速假进度兜底
+    shown = Math.max(shown, Math.min(fake, real || fake));                // 只前进不后退
+    bar.style.width = shown + '%';
+    pct.innerHTML = Math.floor(shown) + '<small>%</small>';
+    if (shown >= 99.5 && performance.now() - t0 >= MIN_MS) {
+      bar.style.width = '100%'; pct.innerHTML = '100<small>%</small>';
+      el.classList.add('done');
+      document.body.style.overflow = '';
+      document.dispatchEvent(new CustomEvent('loader:done'));    // 首屏入场编排挂这个事件
+      return;
+    }
+    requestAnimationFrame(tick);
+  })();
+})();
+</script>

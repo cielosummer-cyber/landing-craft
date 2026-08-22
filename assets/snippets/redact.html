@@ -1,0 +1,37 @@
+<!-- ============================================================================
+ 片段：涂黑条揭示 redact
+ 用途：行内词组被一条黑块盖住，hover 时黑块从右侧收起，露出文字。
+       档案/解密气质的彩蛋交互。
+ 来源：landing-cielo-v5-dossier/index.html（.redact）
+
+ 关键参数（以源码为准）：
+   黑条 inset       0.18em -0.05em（上下留一点字边，左右微溢出更自然）
+   收起方向         transform-origin: right，hover 时 scaleX(0)
+   时长 / 缓动      0.4s / cubic-bezier(0.16, 1, 0.3, 1)（easeOutExpo）
+   容器             inline-block + white-space:nowrap（多行断开会穿帮）
+
+ ?shot=1 完成态规则：
+   - redact 是 hover 交互，不是入场动画，shot 模式不做任何覆写——
+     截图里黑条保持盖住的状态（这正是「涂黑」的语义）。源文件即如此。
+
+ 已知坑：
+   - 克制用量：全页最多两处（源文件 557 行里只出现两次：正文一处、卷尾一处）。
+     超过两处彩蛋变噪音。
+   - 只包短词组；包长句会撑出 white-space:nowrap 的横向溢出。
+   - 触屏无 hover，黑条下的文字等于对触屏用户隐藏——别藏关键信息，
+     只藏「值得被发现的」修饰语。
+============================================================================ -->
+
+<style>
+.redact{position:relative;display:inline-block;white-space:nowrap;}
+.redact::after{
+  content:"";position:absolute;inset:0.18em -0.05em;
+  background:var(--INK, #1A1714);
+  transform-origin:right;
+  transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.redact:hover::after{transform:scaleX(0);}
+</style>
+
+<!-- 结构：行内短词组 -->
+<p>……转化为可感知、可交互、<span class="redact">可持续生长</span>的文化体验。</p>

@@ -1,0 +1,58 @@
+<!-- ============================================================================
+ 片段：盖章入场 stamp
+ 用途：一个「印章」块以放大+旋转的姿态砸落到完成态，配合 multiply 混合
+       产生油墨盖在纸上的质感。适合档案/卷宗/编辑气质页面的签名元素。
+ 来源：landing-cielo-v5-dossier/index.html（.seal / @keyframes stamp）
+
+ 关键参数（以源码为准，按需微调）：
+   from 形变        transform: scale(1.8) rotate(-18deg); opacity: 0
+   完成态形变       transform: rotate(-8deg)（即 scale(1)）
+   时长 / 延迟      0.5s / 1.2s（动画 both，延迟期间保持 from 态）
+   缓动             cubic-bezier(0.2, 1.4, 0.4, 1)（带回弹，章落纸感）
+   混合             mix-blend-mode: multiply（必须，油墨感全靠它）
+   章体             104×104px，border-radius: 7px 3px 9px 5px（微歪的方章）
+   定位             absolute，right:6%; bottom:-96px（压出血到容器外）
+
+ ?shot=1 完成态规则（landing-craft 硬约定）：
+   - head 里检测 ?shot=1 → <html class="shot">，否则加 class="js"
+   - html.shot 下：animation 全部 none，.seal 直接 transform:rotate(-8deg);opacity:1
+
+ 已知坑：
+   - 完成态的 rotate(-8deg) 必须同时写进「基础 transform」和「html.shot 覆写」
+     两处；keyframes 的 from 里也要带上 rotate(-18deg)。三处角度是同一组数，
+     改角度时三处一起改，否则 shot 截图和真实动画落点不一致。
+   - 动画用 both（backwards fill），延迟 1.2s 期间章是隐形的（opacity:0），
+     不要用 forwards，否则延迟期间章会以完成态悬在页面上。
+   - 父容器要 position:relative，且章 z-index 压在被盖的内容之上。
+============================================================================ -->
+
+<style>
+.seal{
+  position:absolute;right:6%;bottom:-96px;
+  width:104px;height:104px;
+  background:var(--ACCENT, #C03A2B);
+  border-radius:7px 3px 9px 5px;
+  mix-blend-mode:multiply;
+  display:grid;grid-template-columns:1fr 1fr;place-items:center;
+  transform:rotate(-8deg);                       /* 完成态角度（与 shot 覆写一致） */
+  animation:stamp 0.5s 1.2s cubic-bezier(0.2,1.4,0.4,1) both;
+  z-index:3;
+}
+@keyframes stamp{
+  from{transform:scale(1.8) rotate(-18deg);opacity:0;}
+}
+.seal span{
+  font-weight:900;font-size:30px;line-height:1;
+  color:var(--BG, #E7DFCB);
+}
+/* ?shot=1 完成态 */
+html.shot .seal{animation:none;transform:rotate(-8deg);opacity:1;}
+</style>
+
+<!-- 结构：放进一个 position:relative 的容器里，压在内容边缘 -->
+<div class="seal" aria-hidden="true"><span>文</span><span>化</span><span>为</span><span>根</span></div>
+
+<script>
+// ?shot=1 检测（放在 <head> 最早处，避免 FOUC）：
+// if (location.search.indexOf('shot=1') > -1) document.documentElement.classList.add('shot');
+</script>

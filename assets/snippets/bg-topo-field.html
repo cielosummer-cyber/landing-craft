@@ -1,0 +1,195 @@
+<!-- ============================================================================
+ 片段：地形等高线流动背景 bg-topo-field
+ 用途：Raw WebGL 全屏背景。simplex 噪声量化成 10 档等高线缓慢漂移，
+       叠加一层 1px 物理像素细网格，工业/基础设施/极客气质。
+       原页是 AI 基建产品的 hero 底（白线黑底），极适合深色科技页。
+ 来源：threeui（MIT，github.com/MengTo/threeui）
+       src/shaders/neuform-isolated/sources/topo-field.html
+       已剥掉原页全部导航/hero/卡片/GSAP 文字内容，只留 WebGL 渲染层。
+
+ 关键参数（片段顶部 CONFIG，按需微调）：
+   BG          底色 [0,0,0]（rgb 0-1 数组）
+   TINT        线条色 [1,1,1]——网格和等高线共用这一个色相，
+               想要蓝调就 [0.6,0.8,1.0]，金调就 [1.0,0.85,0.6]
+   GRID_ALPHA  0.12   网格线强度
+   TOPO_ALPHA  0.45   等高线强度
+   NOISE_SCALE 1.4    地形空间尺度，越大山越碎
+   NUM_BANDS   10     等高线档数
+   SHOT_T      18.0   shot 模式定格的时间点（秒）
+
+ ?shot=1 确定性终态规则（landing-craft 硬约定）：
+   - URL 带 shot=1 时：u_time 固定为 SHOT_T，渲染一帧后停手，不进 rAF。
+     着色器无随机输入，每次截图像素级一致。
+   - 正常模式从 0 开始计时持续漂移。
+
+ 已知坑：
+   - 等高线密度由 u_dpr 参与网格计算，DPR 上限锁 2（原页不锁，4K
+     屏会画 4 倍像素）；改上限会同时改变网格视觉间距，别随手动。
+   - 线是「贴地 0.45 强度」的暗线设计，上面必须压径向/线性渐变遮罩
+     保证文字可读性（参考原页 from-black/50 via-transparent to-black）。
+   - getContext 用了 alpha:false，canvas 本身不透明，BG 就是最终底色。
+   - WebGL 不可用时静默跳过（gl 为 null 不报错），页面只剩纯色底。
+============================================================================ -->
+
+<canvas id="bg-topo-field" aria-hidden="true"
+        style="position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;"></canvas>
+
+<script>
+(function () {
+  // ── CONFIG：色板与密度都集中在这里 ─────────────────────
+  var BG          = [0.0, 0.0, 0.0];   // 底色（0-1）
+  var TINT        = [1.0, 1.0, 1.0];   // 线条色相（0-1）
+  var GRID_ALPHA  = 0.12;              // 网格强度
+  var TOPO_ALPHA  = 0.45;              // 等高线强度
+  var NOISE_SCALE = 1.4;               // 地形空间尺度
+  var NUM_BANDS   = 10.0;              // 等高线档数
+  var SHOT_T      = 18.0;              // shot 定格秒数
+  // ───────────────────────────────────────────────────────
+
+  var SHOT = location.search.indexOf('shot=1') > -1;
+
+  var canvas = document.getElementById('bg-topo-field');
+  var gl = canvas.getContext('webgl', { alpha: false, antialias: false, depth: false });
+  if (!gl) return; // 无 WebGL：静默留纯色底
+
+  var vsSource = [
+    'attribute vec2 a_position;',
+    'void main() { gl_Position = vec4(a_position, 0.0, 1.0); }'
+  ].join('\n');
+
+  var fsSource = [
+    'precision highp float;',
+    'uniform vec2 u_resolution;',
+    'uniform float u_time;',
+    'uniform float u_dpr;',
+    'uniform vec3 u_bg;',
+    'uniform vec3 u_tint;',
+    'uniform float u_gridAlpha;',
+    'uniform float u_topoAlpha;',
+    'uniform float u_noiseScale;',
+    'uniform float u_numBands;',
+    '',
+    'vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }',
+    'float snoise(vec2 v){',
+    '  const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);',
+    '  vec2 i  = floor(v + dot(v, C.yy));',
+    '  vec2 x0 = v - i + dot(i, C.xx);',
+    '  vec2 i1; i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);',
+    '  vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1;',
+    '  i = mod(i, 289.0);',
+    '  vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));',
+    '  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);',
+    '  m = m*m; m = m*m;',
+    '  vec3 x = 2.0 * fract(p * C.www) - 1.0;',
+    '  vec3 h = abs(x) - 0.5; vec3 ox = floor(x + 0.5);',
+    '  vec3 a0 = x - ox; m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );',
+    '  vec3 g; g.x = a0.x * x0.x + h.x * x0.y; g.yz = a0.yz * x12.xz + h.yz * x12.yw;',
+    '  return 130.0 * dot(m, g);',
+    '}',
+    '',
+    'void main() {',
+    '  vec2 st = gl_FragCoord.xy / u_resolution.xy;',
+    '  st.x *= u_resolution.x / u_resolution.y;',
+    '',
+    '  // 1px 物理像素网格',
+    '  float gridSize = 48.0 * u_dpr;',
+    '  vec2 gridSt = gl_FragCoord.xy / gridSize;',
+    '  vec2 gridFract = fract(gridSt);',
+    '  float lineThickness = 1.0 / gridSize;',
+    '  float gridLines = step(1.0 - lineThickness, gridFract.x) + step(1.0 - lineThickness, gridFract.y);',
+    '  gridLines = clamp(gridLines, 0.0, 1.0) * u_gridAlpha;',
+    '',
+    '  // 超细地形等高线',
+    '  vec2 noisePos = st * u_noiseScale + vec2(u_time * 0.015, u_time * 0.025);',
+    '  float n = snoise(noisePos) * 0.5 + 0.5;',
+    '  float bandVal = n * u_numBands;',
+    '  float triangleWave = abs(fract(bandVal) - 0.5) * 2.0;',
+    '  float topoLines = smoothstep(0.02, 0.00, triangleWave) * u_topoAlpha;',
+    '',
+    '  vec3 color = u_bg;',
+    '  color += u_tint * gridLines;',
+    '  color += u_tint * topoLines;',
+    '',
+    '  gl_FragColor = vec4(color, 1.0);',
+    '}'
+  ].join('\n');
+
+  function createShader(type, source) {
+    var shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    return shader;
+  }
+
+  var program = gl.createProgram();
+  gl.attachShader(program, createShader(gl.VERTEX_SHADER, vsSource));
+  gl.attachShader(program, createShader(gl.FRAGMENT_SHADER, fsSource));
+  gl.linkProgram(program);
+  gl.useProgram(program);
+
+  var positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  var positionLocation = gl.getAttribLocation(program, 'a_position');
+  gl.enableVertexAttribArray(positionLocation);
+  gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+  var uResolution = gl.getUniformLocation(program, 'u_resolution');
+  var uTime       = gl.getUniformLocation(program, 'u_time');
+  var uDpr        = gl.getUniformLocation(program, 'u_dpr');
+  var uBg         = gl.getUniformLocation(program, 'u_bg');
+  var uTint       = gl.getUniformLocation(program, 'u_tint');
+  var uGridAlpha  = gl.getUniformLocation(program, 'u_gridAlpha');
+  var uTopoAlpha  = gl.getUniformLocation(program, 'u_topoAlpha');
+  var uNoiseScale = gl.getUniformLocation(program, 'u_noiseScale');
+  var uNumBands   = gl.getUniformLocation(program, 'u_numBands');
+
+  gl.uniform3fv(uBg, BG);
+  gl.uniform3fv(uTint, TINT);
+  gl.uniform1f(uGridAlpha, GRID_ALPHA);
+  gl.uniform1f(uTopoAlpha, TOPO_ALPHA);
+  gl.uniform1f(uNoiseScale, NOISE_SCALE);
+  gl.uniform1f(uNumBands, NUM_BANDS);
+
+  var dpr;
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.uniform2f(uResolution, canvas.width, canvas.height);
+    gl.uniform1f(uDpr, dpr);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function drawFrame(t) {
+    gl.uniform1f(uTime, t);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+
+  if (SHOT) {
+    // 确定性终态：固定时间点渲一帧即停
+    drawFrame(SHOT_T);
+    return;
+  }
+
+  var startTime = performance.now();
+  var running = true, rafId = null;
+  function loop(now) {
+    if (!running) return;
+    drawFrame((now - startTime) * 0.001);
+    rafId = requestAnimationFrame(loop);
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      running = false;
+      if (rafId) cancelAnimationFrame(rafId);
+    } else if (!running) {
+      running = true;
+      rafId = requestAnimationFrame(loop);
+    }
+  });
+  rafId = requestAnimationFrame(loop);
+})();
+</script>

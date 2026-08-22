@@ -1,0 +1,42 @@
+<!-- ============================================================================
+ 片段：字符级升起 ch-rise
+ 用途：大标题逐字从下方遮罩内升起，错峰入场。中文大字的招牌入场方式。
+ 来源：landing-cielo-v5-dossier/index.html（.ch-wrap / .ch / @keyframes ch-rise）
+
+ 关键参数（以源码为准）：
+   升起距离         translateY(110%)（略超 100%，保证字完全出遮罩）
+   单字时长         0.7s
+   缓动             cubic-bezier(0.16, 1, 0.3, 1)（easeOutExpo）
+   错峰             animation-delay: calc(0.5s + var(--i) * 0.09s)
+                    —— 0.5s 是整体起拍的等待，0.09s 是字间距
+   遮罩             外层 .ch-wrap { overflow:hidden; vertical-align:bottom }
+   字距变量         每个字的内联 style="--i:0" / "--i:1" …
+
+ ?shot=1 完成态规则（硬约定）：
+   - html.shot * { animation:none !important; }
+   - html.shot .ch { transform:none; }（from 态在遮罩外，必须显式拉回）
+
+ 已知坑：
+   - 空格字也要包一层 ch-wrap + 一个 --i 序号（源文件里 "周 颖" 中间的
+     &nbsp; 是 --i:1），否则空格不占拍次、后面字的节奏全乱。
+   - .ch-wrap 的 vertical-align:bottom 不能省，否则 inline-block 基线
+     会让整行下沉几个像素。
+   - 同系变体（chinese 版）：用 transition 而非 animation，初始
+     translateY(40px)+opacity:0，加 .on 触发，单字 delay 0.15s/0.23s
+     手写 nth-child。字数少且需要 JS 编排时用这个变体。
+============================================================================ -->
+
+<style>
+.ch-wrap{display:inline-block;overflow:hidden;vertical-align:bottom;}
+.ch{
+  display:inline-block;
+  animation:ch-rise 0.7s cubic-bezier(0.16,1,0.3,1) both;
+  animation-delay:calc(0.5s + var(--i) * 0.09s);
+}
+@keyframes ch-rise{from{transform:translateY(110%);}}
+/* ?shot=1 完成态 */
+html.shot .ch{animation:none;transform:none;}
+</style>
+
+<!-- 结构：逐字包裹，空格也要占一拍 -->
+<h1 class="cover-title"><span class="ch-wrap"><span class="ch" style="--i:0">周</span></span><span class="ch-wrap"><span class="ch" style="--i:1">&nbsp;</span></span><span class="ch-wrap"><span class="ch" style="--i:2">颖</span></span></h1>

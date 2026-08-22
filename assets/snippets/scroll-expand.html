@@ -1,0 +1,86 @@
+<!-- ============================================================================
+ 片段：scroll-expand（hero 图随滚动撑满屏宽）
+ 用途：hero 区图片初始 38vw 居中，随首屏滚动线性撑到 100vw，同时
+       圆角归零、内部图片缩放收敛——一屏之内完成「揭幕」。
+ 来源：landing-cielo-v5-chinese/index.html（#expandBox / #expandImg + scroll 监听）
+
+ 关键参数（以源码为准）：
+   宽度             38vw → 100vw（min-width:300px 兜底）
+   滚动区间         0.9 × window.innerHeight（p = clamp(scrollY / RANGE, 0, 1)）
+   缓动             easeOutCubic：e = 1 - (1-p)^3（应用于插值，不是 CSS transition）
+   圆角             4px × (1-e) → 0
+   内部缩放         img scale 1.15 → 1（transform-origin:center）
+   比例             aspect-ratio: 3/2，overflow:hidden
+   监听             scroll(passive) + resize，rAF ticking 节流，apply() 合成全部形变
+
+ ?shot=1 完成态规则（硬约定）：
+   - 检测 ?shot=1 → html 加 class="shot"，并直接 apply(1) 一次性写满完成态
+   - 不注册 scroll 监听（shot 模式下滚动不再改样式）
+
+ 已知坑：
+   - JS 覆写 transform 会整个吞掉 CSS 里的 transform：.expand img 在 CSS 里
+     写了 scale(1.15) 只是「无 JS 时的初始值」，一旦 apply() 跑过，
+     img.style.transform 就是唯一生效的形变。所以所有固定形变（缩放、以及
+     你想加的 rotate/translate）必须在 apply() 里同一行字符串合成，不能指望
+     CSS 类叠加。改参数时改 apply()，别只改 CSS。
+   - 宽度走 style.width 逐帧写 vw，不要加 CSS transition——逐帧插值交给
+     easeOutCubic，加 transition 会变成「追帧」拖影。
+   - body 需 overflow-x:hidden：100vw 含滚动条宽度，不写会横向溢出。
+   - 首帧必须手动调一次 onScroll()，否则加载后未滚动时图停在 CSS 初始态。
+============================================================================ -->
+
+<style>
+.expand-outer{padding:110px 0 0;}
+.expand{
+  width:38vw;min-width:300px;
+  margin:0 auto;
+  border-radius:4px;
+  overflow:hidden;
+  aspect-ratio:3/2;
+}
+.expand img{
+  display:block;width:100%;height:100%;object-fit:cover;
+  transform:scale(1.15);transform-origin:center;  /* 仅无 JS 时的初始态 */
+}
+</style>
+
+<!-- 结构 -->
+<div class="expand-outer">
+  <div class="expand" id="expandBox">
+    <img src="你的图.jpg" alt="……" id="expandImg">
+  </div>
+</div>
+
+<script>
+(function(){
+  var SHOT = /[?&]shot=1/.test(location.search);
+  if (SHOT) document.documentElement.classList.add('shot');
+
+  var box = document.getElementById('expandBox');
+  var img = document.getElementById('expandImg');
+  var W_MIN = 38;               // vw
+  var RANGE = function(){ return 0.9 * window.innerHeight; };
+  function clamp(v,a,b){ return Math.min(b, Math.max(a, v)); }
+  function apply(p){
+    var e = 1 - Math.pow(1 - p, 3);          // easeOutCubic
+    box.style.width = (W_MIN + (100 - W_MIN) * e) + 'vw';
+    box.style.borderRadius = (4 * (1 - e)) + 'px';
+    img.style.transform = 'scale(' + (1.15 - 0.15 * e) + ')';  // 形变全部在这里合成
+  }
+  if (SHOT) { apply(1); }
+  else {
+    var ticking = false;
+    function onScroll(){
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function(){
+        apply(clamp(window.scrollY / RANGE(), 0, 1));
+        ticking = false;
+      });
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', onScroll);
+    onScroll();                  // 首帧
+  }
+})();
+</script>
