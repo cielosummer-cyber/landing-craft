@@ -23,7 +23,7 @@ description: 高级美学落地页固定流水线：素材阶梯（CC 免费图�
 | `experimental-studio.md` | 实验工作室（agency/作品集，源 locomotive.ca） | ✅ 自建验证（`~/landing-northfield/`） |
 | `deep-space-atlas.md` | 深空星图（知识图谱/文化科技，⚠️ 仅限 Cielo 本人品牌项目使用——个人页场景被本人否决） | ✅ 自建验证（`~/landing-cielo/` V2） |
 | `archive-dossier.md` | 卷宗档案（个人品牌/出版/文化机构，源 niccolomiranda.com × 中文卷宗转译） | ✅ 自建验证（`~/landing-cielo/` V3） |
-| `digital-heritage-immersive.md` | 数字非遗·暗夜流光（非遗/文博/展馆大屏，源 teamlab.art × hkpm.org.hk，反例 ihchina.cn） | ✅ 自建验证（`~/landing-heritage-test/`，回填主动断行规则） |
+| `digital-heritage-immersive.md` | 数字非遗·暗夜流光（非遗/文博/展馆大屏，源 teamlab.art × hkpm.org.hk × ihchina.cn 对照） | ✅ 自建验证（`~/landing-heritage-test/`，回填主动断行规则） |
 
 基准卡 = 从真实优秀站点提取的令牌，尚未经自建验证；首次被单子使用时验收加倍严格，用后把状态改为 ✅ 并回填修正。
 
