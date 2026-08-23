@@ -32,3 +32,18 @@
 ## Prompt-as-artifact（v1/v3 实测）
 
 他把复刻提示词存成项目文件（`RECREATE PROMPT.md`），与产物同目录。我们的 spec.md 已覆盖此职能—— spec 就是这单的 recreate prompt，迭代先改 spec 的纪律与此同源。
+
+## 视频迭代防漂移：验收闸门机制（2026-08-23 宜春 kiosk 三轮翻车换来）
+
+同一内容反复重新生成必然漂移（生成是抽卡，提示词只能调概率）。纪律：
+
+1. **用户验收通过的版本立刻抽关键帧存档**（起/承/转/合 4 帧，存 `qa/gate-*/`），此后任何改动必须过闸门比对才能替换上线
+2. **清晰度/体积类升级一律走超分，不再重新生成**：Real-ESRGAN 逐帧 4x（`tools/upscale_frames.py`，torch/MPS，免 basicsr）再 lanczos 收到目标分辨率，内容零漂移
+3. **换片必带 URL 版本参数**（`attract-loop.mp4?v=up1080`），file:// 下 Chrome 视频缓存极顽固
+4. **ark_video.sh 第 6 参数分辨率**：`1080p` 仅 doubao-seedance-2.0（非 mini）实测可用
+
+## maskedmerge 两个连环坑（2026-08-23 实修）
+
+1. **流顺序是反的**：亮部遮罩取的是**第二路流**（overlay），暗部取第一路。「标题带保金」的正确写法是 `[低部流][金字流][mask]maskedmerge`——金字流必须放第二输入。写反了会让标题带悄悄吃上降饱和（金字灰暗的隐形根因）
+2. **RGB 源丢色**：输入是 PNG 帧序列（rgb）时 maskedmerge 输出会丢彩成全灰，两路输入先 `format=yuv444p` 再进 maskedmerge；mp4 源（yuv）无此问题
+3. mask 必须 `nullsrc=d=时长` 生成等长视频 + `-shortest`，`-loop 1 -i png` 会无限流卡死

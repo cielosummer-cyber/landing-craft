@@ -2,12 +2,12 @@
 # ark_video.sh — 火山方舟 Agent Plan 生视频（Seedance 异步任务，套餐内计费）
 # 用法:
 #   文生视频: bash ark_video.sh 输出.mp4 "提示词"
-#   图生视频（hero loop 主力）: bash ark_video.sh 输出.mp4 "提示词" <首帧图路径或URL> [时长秒=5] [模型=doubao-seedance-2.0-mini]
+#   图生视频（hero loop 主力）: bash ark_video.sh 输出.mp4 "提示词" <首帧图路径或URL> [时长秒=5] [模型=doubao-seedance-2.0-mini] [分辨率=1080p]
 # hero loop 提示词公式见 references/media-recipes.md：主体静止 + 微动 + 极慢推镜 + loop-friendly
 # 密钥: ~/.config/ark/agent-plan-key。API 走 /api/plan/v3，勿改 /api/v3（套餐外计费）。
 set -euo pipefail
 
-OUT="$1"; PROMPT="$2"; FIRST_FRAME="${3:-}"; DURATION="${4:-5}"; MODEL="${5:-doubao-seedance-2.0-mini}"
+OUT="$1"; PROMPT="$2"; FIRST_FRAME="${3:-}"; DURATION="${4:-5}"; MODEL="${5:-doubao-seedance-2.0-mini}"; RESOLUTION="${6:-}"
 KEY="${ARK_API_KEY:-$(cat "$HOME/.config/ark/agent-plan-key")}"
 BASE="https://ark.cn-beijing.volces.com/api/plan/v3"
 mkdir -p "$(dirname "$OUT")"
@@ -17,6 +17,7 @@ BODY="$(mktemp)"
 python3 -c "
 import json, sys, base64, mimetypes
 prompt, frame, model, duration = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4])
+resolution = sys.argv[6] if len(sys.argv) > 6 else ''
 parts = [{'type': 'text', 'text': prompt}]
 if frame:
     if frame.startswith('http'):
@@ -26,8 +27,10 @@ if frame:
         url = 'data:' + mt + ';base64,' + base64.b64encode(open(frame, 'rb').read()).decode()
     parts.append({'type': 'image_url', 'image_url': {'url': url}})
 body = {'model': model, 'content': parts, 'duration': duration, 'ratio': 'adaptive', 'watermark': False}
+if resolution:
+    body['resolution'] = resolution   # doubao-seedance-2.0 实测支持 1080p（2026-08-23）
 open(sys.argv[5], 'w').write(json.dumps(body, ensure_ascii=False))
-" "$PROMPT" "$FIRST_FRAME" "$MODEL" "$DURATION" "$BODY"
+" "$PROMPT" "$FIRST_FRAME" "$MODEL" "$DURATION" "$BODY" "$RESOLUTION"
 
 TASK=$(curl -s -m 60 -X POST "$BASE/contents/generations/tasks" \
   -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" --data-binary "@$BODY")
