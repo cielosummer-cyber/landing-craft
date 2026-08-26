@@ -40,8 +40,9 @@
 
 ## 从外部页面提取新卡的协议
 
-1. 拿到参考（URL / 截图 / 用户描述「就要 XX 那种感觉」）
+1. 拿到参考（URL / 截图 / 用户描述「就要 XX 那种感觉」）；参考是视频时走 `references/video-analysis.md` 先抽帧分层
 2. 有 URL：kimi-webbridge 打开 → `screenshot` 全页 + `evaluate` 抽 computedStyle（body 背景、主标题 font-family/size/weight、accent 色出现处、按钮样式）
 3. 只有截图：肉眼提取色板（取色）、字体气质（衬线/无衬线/字重）、布局节奏、签名交互（如视频/GIF 则逐帧看）
 4. 按模板填卡，存 `references/cards/{方向名}.md`
 5. 禁忌栏必须填——写不出禁忌说明这个方向你还没看懂，回去再看
+6. **新卡配最小 demo**（2026-08-26 起）：`references/cards/{方向名}/demo/index.html` 单文件 + `PROMPT.md` 一段复刻提示词。demo 只演签名交互和排版令牌（一页以内、零依赖、双击直开），不放真实文案图像——卡是语法书不是课文。老卡用到时顺手补
