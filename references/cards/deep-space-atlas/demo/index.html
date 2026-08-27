@@ -207,7 +207,7 @@ footer{
   <div class="wrap" style="margin-top:80px">
     <div class="phead" style="border-bottom:none;padding-bottom:0">
       <div><span class="name" style="font-size:16px">数据徽章 Badges</span></div>
-      <div class="params mono">mono 大数字 + 小写 label · count-up 1.4s easeOutExpo · ?shot=1 直置终态</div>
+      <div class="params mono">mono 大数字 + 小写 label · count-up easeOutExpo（DUR 演示编排值）· ?shot=1 直置终态</div>
     </div>
     <div class="badges" style="margin-top:24px;border-top:1px solid var(--hairline)">
       <div class="badge"><div class="num" data-n="45000">0</div><div class="lab mono">nodes · 数据节点</div></div>
@@ -260,6 +260,7 @@ const STAR_THRESH = [0.978, 0.986, 0.991];    // 三层星野阈值
 const MOUSE_LERP  = 0.04;                     // 鼠标视差 lerp
 const DRIFT_X = 0.006, DRIFT_Y = 0.0032;      // 连续镜头漂移 /s
 const EXPO_MUL = 1.55, EXPO_POW = 0.88;       // 终端曝光 pow(col*1.55, .88)
+const COUNT_DUR = 1400;                       // count-up 时长（演示编排值，卡未冻结——卡只冻结 IO 触发 + ?shot=1 直置终态）
 
 /* ===== 01 nebula：WebGL2 全屏体积星云着色器 ===== */
 (function(){
@@ -410,7 +411,7 @@ void main(){
   function final(el){ el.textContent=Number(el.dataset.n).toLocaleString('en-US'); }
   if(SHOT){ nums.forEach(final); return; }
   function animate(el){
-    var n=Number(el.dataset.n), DUR=1400, t0=performance.now();
+    var n=Number(el.dataset.n), DUR=COUNT_DUR, t0=performance.now();
     (function tick(now){
       var p=Math.min(1,(now-t0)/DUR), e=1-Math.pow(2,-10*p);   // easeOutExpo
       el.textContent=Math.round(n*e).toLocaleString('en-US');

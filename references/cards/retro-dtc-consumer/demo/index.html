@@ -118,8 +118,7 @@ h1.display span{display:block;white-space:nowrap}
   overflow:hidden;
 }
 .fl{position:absolute;will-change:transform}     /* JS 按 data-speed 写 translateY */
-.can-in{animation:popIn .9s cubic-bezier(.34,1.56,.64,1) both}   /* 入场轻微回弹 easeOutBack */
-.hero-art .can-in{animation:popIn .9s cubic-bezier(.34,1.56,.64,1) both}
+.can-in{animation:popIn .9s cubic-bezier(.34,1.56,.64,1) both}   /* 入场 easeOutBack（曲线名卡冻结；48px/.94/.9s 为演示编排值，卡未冻结） */
 @keyframes popIn{
   from{transform:translateY(48px) scale(.94);opacity:0}
   to{transform:none;opacity:1}

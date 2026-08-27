@@ -261,11 +261,13 @@ var io=new IntersectionObserver(function(entries){
 figs.forEach(function(f){io.observe(f);});
 
 /* ===== mono 参数行实时回显：滚动位置 + 揭示计数 + 冻结参数 ===== */
-var readout=document.getElementById('readout');
+var readout=document.getElementById('readout'),frame=0;
 function loop(){
-  readout.textContent='Y '+String(Math.round(window.scrollY)).padStart(4,'0')+
-    ' · REVEALED '+revealed+'/'+figs.length+
-    '  |  INSET '+RV.INSET+'%→0 · SCALE '+RV.SCALE+'→1 · '+(RV.DUR/1000)+'s easeOutExpo · TXT '+RV.TXT_DUR+'ms/↑'+RV.TXT_RISE+'px · HOVER '+RV.HOVER_OPACITY;
+  if(++frame%6===0){                            // 与其余各卡一致：每 6 帧节流回显
+    readout.textContent='Y '+String(Math.round(window.scrollY)).padStart(4,'0')+
+      ' · REVEALED '+revealed+'/'+figs.length+
+      '  |  INSET '+RV.INSET+'%→0 · SCALE '+RV.SCALE+'→1 · '+(RV.DUR/1000)+'s easeOutExpo · TXT '+RV.TXT_DUR+'ms/↑'+RV.TXT_RISE+'px · HOVER '+RV.HOVER_OPACITY;
+  }
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
