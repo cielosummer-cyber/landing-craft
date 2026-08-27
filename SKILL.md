@@ -24,6 +24,7 @@ description: 高级美学落地页固定流水线：素材阶梯（CC 免费图�
 | `deep-space-atlas.md` | 深空星图（知识图谱/文化科技，⚠️ 仅限 Cielo 本人品牌项目使用——个人页场景被本人否决） | ✅ 自建验证（`~/landing-cielo/` V2） |
 | `archive-dossier.md` | 卷宗档案（个人品牌/出版/文化机构，源 niccolomiranda.com × 中文卷宗转译） | ✅ 自建验证（`~/landing-cielo/` V3） |
 | `digital-heritage-immersive.md` | 数字非遗·暗夜流光（非遗/文博/展馆大屏，源 teamlab.art × hkpm.org.hk × ihchina.cn 对照） | ✅ 自建验证（`~/landing-heritage-test/`，回填主动断行规则） |
+| `hairline-archive-portal.md` | 细笔档案门户（多分库文化数字化门户首屏，源 e-dunhuang.com 实地提取；与 digital-heritage-immersive 在「压暗 hero」「中文巨标题字重」两点上正相反，禁混用） | ✅ 自建验证（`~/landing-xingtu-claude/`，双平台对决首用，回填 5 条修正） |
 
 基准卡 = 从真实优秀站点提取的令牌，尚未经自建验证；首次被单子使用时验收加倍严格，用后把状态改为 ✅ 并回填修正。
 
@@ -53,7 +54,7 @@ description: 高级美学落地页固定流水线：素材阶梯（CC 免费图�
 ### 1 · 素材阶梯（按顺序下，不许跳级）
 
 1. **CC 免费图库**：`python3 scripts/fetch_images.py --query "英文关键词" --out 项目/assets/img --count 3`（Wikimedia）；命中率低时用 Openverse API 搜 Flickr CC（`https://api.openverse.org/v1/images/?q=...&license_type=all`，带合规 UA）。**每张肉眼审核**——图库结果混杂，实测淘汰率约 50%，无关图/滤镜图/水印图直接删
-2. **Ark 生图（首选生图，套餐内零边际成本）**：`bash scripts/ark_image.sh 输出路径 "提示词"`（Seedream 5.0，2K/3K，走 Agent Plan 配额，已内置 `--watermark false`——底层 generate.js 默认 watermark:true 会在右下角打「AI生成」标，2026-08-22 实测）。提示词写**具体视觉特征 + 项目色板色值 + 摄影参数 + 横竖版**；注意底层 generate.js 会自动追加画质增强词
+2. **Ark 生图（首选生图，套餐内零边际成本）**：`bash scripts/ark_image.sh 输出路径 "提示词" [尺寸] [optimize]`（Seedream 5.0，2K/3K，走 Agent Plan 配额，已内置 `--watermark false`——底层 generate.js 默认 watermark:true 会在右下角打「AI生成」标，2026-08-22 实测）。提示词写**具体视觉特征 + 项目色板色值 + 摄影参数 + 横竖版**；底层 generate.js 会自动追加画质增强词，两个实测坑（2026-08-27 赣鄱星图单）：①优化器关键词命中「插画」——即使出现在否定句——就会注入插画风格后缀，摄影/写实类提示词把第 4 个参数传 `false`；②Seedream 要求 ≥3.7MP，自定义像素尺寸 2560×1280（3.3MP）会被 HTTP 400 拒，用 2K/3K 档位或 ≥2880×1440
 3. **Ark 生视频（hero loop）**：`bash scripts/ark_video.sh 输出.mp4 "提示词" [首帧图] [时长=5]`（Seedance 2.0，支持图生视频首帧）。提示词公式见 `references/media-recipes.md`：主体静止 + 微动 + 极慢推镜 + loop-friendly
 4. **codex 生图兜底**：`bash scripts/gen_image.sh 输出路径 "提示词"`（gpt-image-2，复用本机 ChatGPT 登录）。Ark 不可用时的备用通道
 5. **诚实 placeholder**：生图也不满意就留占位并标注「图待补」，不拿烂图凑数
