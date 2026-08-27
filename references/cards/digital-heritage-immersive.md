@@ -21,6 +21,7 @@
 - 正文: Noto Sans SC 400，1.9 行高——黑底正文用无衬线，宋体长文糊
 
 ## 签名交互（每单选一个）
+- 最小演示：`demo/index.html`（零依赖双击直开，两个签名交互 + 排版令牌全参数；复刻提示词 `demo/PROMPT.md`）
 1. **文物聚光 spotlight**（首选）：展品图整体压暗至 `brightness(0.35)`，radial-gradient 光斑（边缘 feather 60%）跟随指针/触摸点，rAF + LERP 平滑；光斑内恢复 `brightness(1)`——观众用手「点亮」文物。参数：`SPOT_R=320px`（75 寸触屏 480px）、`LERP=0.08`、`DIM=0.35`。待机变体：光斑沿利萨如轨迹自游走，或换 `assets/snippets/bg-flow-field` 粒子流
 2. **竖栏手风琴**（ihchina 展览屏模式，触屏天然适配）：5-7 根竖栏各占门类/主题，栏底压暗的文物摄影 + 门类矿物色底 + 竖排宋体栏题，触摸展开该栏至 60% 宽、其余栏收缩，展开态显展签参数行。参数：栏数 ≤7、展开动画 600ms cubic-bezier(.16,1,.3,1)、未展开栏图 `brightness(0.45)`
 
