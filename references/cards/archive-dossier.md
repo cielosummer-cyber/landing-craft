@@ -24,6 +24,7 @@
 - 印章字: Noto Serif SC 900 反白，2×2 四字方章
 
 ## 签名交互（两个，一大一小）
+- 最小演示：`demo/index.html`（零依赖双击直开，两个签名交互 + 排版令牌全参数；复刻提示词 `demo/PROMPT.md`）
 - **盖章入场**：红方章从 scale 1.8 / rotate -18° / opacity 0 砸到 scale 1 / rotate -8°，`cubic-bezier(0.2,1.4,0.4,1)` 0.5s，delay 1.2s；章体 `mix-blend-mode: multiply` 让它「印」在纸面/墨带上
 - **涂黑条揭示**：`<span class="redact">` 黑条盖字，hover 时黑条 scaleX→0（transform-origin: right，0.4s easeOutExpo）露出文字——「解密」手感。全页最多两处，多了变 gimmick
 
