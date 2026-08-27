@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dark-tech-saas · 参考卡最小 demo</title>
+<style>
+/* ===== 令牌（从 dark-tech-saas.md 冻结取值，不临场发明） ===== */
+:root{
+  --bg:#07080A;              /* 近黑微蓝——不是 #000，不是深蓝 #0D1117 */
+  --ink:#FFFFFF;
+  --accent:#FF6363;          /* 唯一 accent；边缘氛围光用同色系 */
+  --muted:rgba(255,255,255,.6);
+  --line:rgba(255,255,255,.1);
+  --btn-bg:#E6E6E6;          /* 按钮反转：浅灰底 + 深字 */
+  --btn-ink:#2F3031;
+  --sans:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--bg)}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:var(--sans);font-weight:400;font-size:16px;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+.mono{font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase}
+
+/* ===== 悬浮玻璃胶囊 nav：blur + 0.1 alpha 白边 ===== */
+.nav{
+  position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:10;
+  display:flex;align-items:center;gap:26px;padding:9px 12px 9px 20px;
+  background:rgba(255,255,255,.04);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border:1px solid var(--line);border-radius:999px;
+  font-size:13px;white-space:nowrap;
+}
+.nav .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.nav a{color:var(--muted);text-decoration:none;cursor:pointer}
+.nav a:hover{color:var(--ink)}
+.btn{
+  display:inline-block;background:var(--btn-bg);color:var(--btn-ink);
+  border-radius:8px;padding:8px 16px;font-size:13px;font-weight:500;
+  cursor:pointer;border:none;
+}
+.btn.ghost{
+  background:transparent;color:var(--ink);
+  border:1px solid var(--line);
+}
+.nav .btn{padding:6px 13px}
+
+/* ===== hero：极致居中 + 氛围光跟手（两层，反向视差） ===== */
+.hero{
+  position:relative;min-height:92vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:120px 24px 60px;overflow:hidden;
+}
+.glow{
+  position:absolute;width:50vw;height:50vw;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,99,99,.12) 0%,transparent 62%);
+}
+.glow.g1{top:-12vw;left:-10vw}
+.glow.g2{bottom:-14vw;right:-8vw;background:radial-gradient(circle,rgba(255,99,99,.09) 0%,transparent 62%)}
+.eyebrow{font-size:12px;color:var(--accent);margin-bottom:26px}
+.hero h1{
+  font-weight:600;font-size:64px;line-height:1.1;letter-spacing:-.02em;
+  max-width:14em;
+}
+.hero .sub{margin-top:22px;color:var(--muted);max-width:34em;line-height:1.7}
+.hero .cta{margin-top:38px;display:flex;gap:14px}
+.hero .readout{
+  position:absolute;left:28px;bottom:20px;
+  font-size:10px;color:var(--muted);
+}
+
+/* ===== 产品 UI 主角：CSS 终端窗（8-12px 圆角 + 0.1 白边 + 深投影悬浮） ===== */
+.term{
+  width:min(680px,92vw);margin:90px auto 0;
+  background:#101214;border:1px solid var(--line);border-radius:10px;
+  box-shadow:0 40px 90px rgba(0,0,0,.55);
+  text-align:left;overflow:hidden;
+}
+.term-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 16px;border-bottom:1px solid var(--line);
+}
+.term-bar i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.16)}
+.term-bar span{margin-left:8px;font-size:11px;color:var(--muted)}
+.term-body{
+  padding:20px 22px 24px;min-height:196px;
+  font-family:var(--mono);font-size:13px;line-height:2;
+}
+.term-body .cmd{color:var(--ink)}
+.term-body .cmd::before{content:"$ ";color:var(--accent)}
+.term-body .out{color:var(--muted)}
+.term-body .ok{color:var(--accent)}
+.cursor{
+  display:inline-block;width:8px;height:15px;vertical-align:-2px;
+  background:var(--ink);animation:blink 1s steps(1) infinite;
+}
+@keyframes blink{50%{opacity:0}}
+
+/* ===== sections：大留白 + 居中 ===== */
+section{padding:130px 24px;max-width:920px;margin:0 auto}
+.shead{text-align:center;margin-bottom:64px}
+.shead .idx{font-size:11px;color:var(--accent);display:block;margin-bottom:14px}
+.shead .name{font-size:20px;font-weight:500;letter-spacing:.2px}
+.rows{border-top:1px solid var(--line)}
+.row{
+  display:flex;justify-content:space-between;align-items:center;gap:24px;
+  padding:26px 4px;border-bottom:1px solid var(--line);
+}
+.row .spec{font-size:11px;color:var(--muted);text-align:right;white-space:nowrap}
+.t-display{font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-.02em}
+.t-label{font-size:20px;font-weight:500}
+.t-body{font-size:16px;color:var(--muted)}
+.swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.sw{background:var(--bg);padding:22px 18px}
+.sw i{display:block;width:34px;height:34px;border-radius:8px;margin-bottom:14px;border:1px solid var(--line)}
+.sw b{display:block;font-size:13px;font-weight:500}
+.sw span{font-size:10px;color:var(--muted)}
+.ban .row{align-items:baseline}
+.ban .x{color:var(--accent);font-weight:600;margin-right:14px}
+.ban p{color:var(--muted);font-size:15px;line-height:1.7}
+footer{
+  padding:40px 24px 48px;text-align:center;
+  font-size:10px;color:var(--muted);border-top:1px solid var(--line);
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="dot"></span>
+  <a>Dark-Tech-SaaS</a>
+  <a>令牌</a>
+  <a>交互</a>
+  <a>禁忌</a>
+  <button class="btn">Get Card</button>
+</nav>
+
+<div class="hero" id="hero">
+  <div class="glow g1" id="g1"></div>
+  <div class="glow g2" id="g2"></div>
+  <div class="eyebrow mono">Reference Card · Minimal Demo</div>
+  <h1>暗夜科技<br>Near-Black Precision</h1>
+  <p class="sub">签名交互：hero 边缘氛围光跟随指针缓慢偏移（两层反向视差），终端键入动画循环演示。全部参数取自冻结卡——卡是语法书，不是课文。</p>
+  <div class="cta">
+    <button class="btn">开始使用</button>
+    <button class="btn ghost">查看令牌</button>
+  </div>
+  <div class="term">
+    <div class="term-bar"><i></i><i></i><i></i><span class="mono">landing-craft — zsh</span></div>
+    <div class="term-body" id="term"></div>
+  </div>
+  <div class="readout mono" id="readout">GLOW — LERP 0.06 · OPACITY ≤.14 · RADIUS 40–60VW</div>
+</div>
+
+<section id="tokens">
+  <div class="shead"><span class="idx mono">01</span><span class="name">色板与字阶</span></div>
+  <div class="swatches">
+    <div class="sw"><i style="background:#07080A"></i><b>BG</b><span class="mono">#07080A · 近黑微蓝</span></div>
+    <div class="sw"><i style="background:#FFFFFF"></i><b>INK</b><span class="mono">#FFFFFF · 纯白主标题</span></div>
+    <div class="sw"><i style="background:#FF6363"></i><b>ACCENT</b><span class="mono">#FF6363 · 唯一强调色</span></div>
+    <div class="sw"><i style="background:rgba(255,255,255,.6)"></i><b>MUTED</b><span class="mono">rgba(255,255,255,.6)</span></div>
+    <div class="sw"><i style="background:#E6E6E6"></i><b>BTN</b><span class="mono">#E6E6E6 / #2F3031 · 8px 圆角</span></div>
+  </div>
+  <div class="rows" style="margin-top:56px">
+    <div class="row"><span class="t-display">Aa 暗夜</span><span class="spec mono">Display · Inter 600 · 64px · LH 1.1</span></div>
+    <div class="row"><span class="t-label">Aa 暗夜</span><span class="spec mono">Label · Inter 500 · 20px · LS 0.2px</span></div>
+    <div class="row"><span class="t-body">Aa 暗夜——正文与说明文字用 400 常规重，次级信息降透明度。</span><span class="spec mono">Body · Inter 400 · 16px</span></div>
+  </div>
+</section>
+
+<section class="ban" id="ban">
+  <div class="shead"><span class="idx mono">02</span><span class="name">禁忌——做了就破功</span></div>
+  <div class="rows">
+    <div class="row"><p><span class="x">✕</span>均匀深蓝底 + 紫色霓虹 glow——GitHub-dark 偷懒解；近黑是有色相的 #07080A</p></div>
+    <div class="row"><p><span class="x">✕</span>第二个高饱和 accent——换品牌只许换一个 accent</p></div>
+    <div class="row"><p><span class="x">✕</span>渐变文字标题</p></div>
+    <div class="row"><p><span class="x">✕</span>衬线字体</p></div>
+  </div>
+</section>
+
+<footer class="mono">
+  BG #07080A · INK #FFF · ACCENT #FF6363 · Glow lerp 0.05–0.08 / opacity ≤.14 / radius 40–60vw · 胶囊 nav blur + 0.1 白边 · UI 截图 8–12px 圆角 + 深投影 · 禁紫 glow / 禁第二 accent / 禁渐变标题 / 禁衬线
+</footer>
+
+<script>
+/* ===== 签名交互①：氛围光跟手（两层反向视差，lerp 0.06） ===== */
+(function(){
+  var LERP=0.06;
+  var g1=document.getElementById('g1'),g2=document.getElementById('g2');
+  var readout=document.getElementById('readout');
+  var mx=0,my=0,x1=0,y1=0,x2=0,y2=0,frame=0;
+  window.addEventListener('pointermove',function(e){
+    mx=e.clientX/window.innerWidth-0.5;
+    my=e.clientY/window.innerHeight-0.5;
+  });
+  function loop(){
+    x1+=(mx*70-x1)*LERP; y1+=(my*50-y1)*LERP;   /* 前层顺向 */
+    x2+=(mx*-45-x2)*LERP; y2+=(my*-60-y2)*LERP;  /* 后层反向，视差 */
+    g1.style.transform='translate('+x1.toFixed(1)+'px,'+y1.toFixed(1)+'px)';
+    g2.style.transform='translate('+x2.toFixed(1)+'px,'+y2.toFixed(1)+'px)';
+    if(++frame%8===0){
+      readout.textContent='GLOW — LERP 0.06 · OPACITY ≤.14 · RADIUS 40–60VW — X '+(x1>=0?'+':'')+Math.round(x1)+' Y '+(y1>=0?'+':'')+Math.round(y1);
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+
+/* ===== 签名交互②：终端键入动画（循环） ===== */
+(function(){
+  var LINES=[
+    ['cmd','landing-craft run --card dark-tech-saas'],
+    ['out','▸ tokens loaded — #07080A / #FFFFFF / #FF6363'],
+    ['out','▸ glow · lerp 0.06 · opacity ≤.14 · radius 40–60vw'],
+    ['cmd','landing-craft verify --gate originality'],
+    ['ok','✓ 拿语法，不抄课文 — PASS']
+  ];
+  var term=document.getElementById('term');
+  var cursor=document.createElement('span');cursor.className='cursor';
+  function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+  async function play(){
+    while(true){
+      term.innerHTML='';term.appendChild(cursor);
+      for(var i=0;i<LINES.length;i++){
+        var cls=LINES[i][0],text=LINES[i][1];
+        var div=document.createElement('div');div.className=cls;
+        term.appendChild(div);
+        if(cls==='cmd'){
+          for(var j=0;j<=text.length;j++){
+            div.textContent=text.slice(0,j);
+            div.appendChild(cursor);
+            await sleep(34);
+          }
+        }else{
+          await sleep(260);
+          div.textContent=text;
+          div.appendChild(cursor);
+        }
+        await sleep(cls==='cmd'?420:300);
+      }
+      await sleep(3000);
+    }
+  }
+  play();
+})();
+</script>
+</body>
+</html>

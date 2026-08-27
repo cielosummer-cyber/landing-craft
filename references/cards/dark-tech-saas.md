@@ -22,6 +22,7 @@
 - Label: Inter 500 20px 级 section 题注，letter-spacing 0.2px
 
 ## 签名交互
+- 最小演示：`demo/index.html`（零依赖双击直开，两个签名交互 + 排版令牌全参数；复刻提示词 `demo/PROMPT.md`）
 - 机制：hero 边缘氛围光跟随鼠标缓慢偏移（两层 radial-gradient 层，translate 跟手 lerp），或终端/快捷键键入动画
 - 参数：lerp 0.05-0.08；光斑 opacity ≤ 0.14；径向半径 40-60vw
 
