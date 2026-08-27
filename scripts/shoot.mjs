@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // shoot.mjs — landing-craft 验收截图：首屏 / 中段 / 全页 + console 错误报告
-// 用法: node shoot.mjs <项目index.html的绝对路径> [输出目录]
+// 用法: node shoot.mjs <项目index.html的绝对路径> [输出目录] [视口WxH，默认1440x900]
 // 页面带 ?shot=1 时所有 reveal 立即置完成态（landing-craft 页面约定），保证全页截图确定性。
+// 视口参数位：定高舞台卡（如 860px 首屏门户）按卡面实测尺寸传，如 1728x860（2026-08-27 kimi 赣鄱星图单回填）
 // playwright 从 npx 缓存动态定位，无需全局安装。
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { homedir } from 'node:os';
@@ -32,12 +33,14 @@ function findPlaywright() {
 const { chromium } = await import(pathToFileURL(findPlaywright()).href);
 
 const htmlPath = process.argv[2];
-if (!htmlPath) { console.error('用法: node shoot.mjs <index.html绝对路径> [输出目录]'); process.exit(1); }
+if (!htmlPath) { console.error('用法: node shoot.mjs <index.html绝对路径> [输出目录] [视口WxH，默认1440x900]'); process.exit(1); }
 const outDir = process.argv[3] || path.dirname(htmlPath);
+const vpMatch = /^(\d+)x(\d+)$/.exec(process.argv[4] || '');
+const VP = { width: vpMatch ? +vpMatch[1] : 1440, height: vpMatch ? +vpMatch[2] : 900 };
 const url = 'file://' + htmlPath + '?shot=1';
 
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const page = await browser.newPage({ viewport: VP });
 const errors = [];
 page.on('pageerror', e => errors.push(String(e)));
 
