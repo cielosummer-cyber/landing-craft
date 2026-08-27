@@ -17,6 +17,7 @@
 - Body: 同族衬线 400，绝不混无衬线正文
 
 ## 签名交互
+- 最小演示：`demo/index.html`（零依赖双击直开，签名交互 + 排版令牌全参数；复刻提示词 `demo/PROMPT.md`）
 - 机制：图片揭示式入场——滚动到位时图片从 clip-path inset(8%) + scale 1.04 收拢到 inset(0) + scale 1，文字同步 fade-up；全站节奏慢（0.8-1.2s）
 - 参数：`clip-path` 过渡 1s easeOutExpo；图片 hover 仅 opacity 0.92，不位移
 

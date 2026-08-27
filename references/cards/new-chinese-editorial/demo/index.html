@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>new-chinese-editorial · 参考卡最小 demo</title>
+<style>
+/* ===== 令牌（从 new-chinese-editorial.md 冻结取值，不临场发明） ===== */
+:root{
+  --bg:#F4F0E6;              /* 暖米宣纸底 */
+  --ink:#232B20;             /* 松烟墨（带绿调的黑，不是纯黑） */
+  --accent:#56714B;          /* 苔绿，唯一强调色（编号、关键词、eyebrow），必须灰调 */
+  --muted:rgba(35,43,32,0.6);
+  --hairline:rgba(35,43,32,0.18);   /* 参数行/nav/section 分隔全靠它 */
+  --serif:"Noto Serif SC","Songti SC","STSong","SimSun",serif;
+  --west:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--bg)}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:var(--serif);font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:var(--mono);font-weight:300;text-transform:uppercase;letter-spacing:.2em}
+
+/* ===== 签名交互：hero 图 scroll-expand（200vh 区间 + sticky 舞台） ===== */
+.hero{position:relative;height:200vh}
+.stage{
+  position:sticky;top:0;height:100vh;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;
+}
+.topline{
+  position:absolute;top:0;left:0;right:0;z-index:3;
+  display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  padding:26px 4vw 14px;font-size:11px;color:var(--muted);
+  border-bottom:1px solid var(--hairline);
+}
+.title-wrap{margin-top:12vh;text-align:center;position:relative;z-index:2}
+.eyebrow{font-size:11px;color:var(--accent);margin-bottom:22px}
+h1.display{
+  font-family:var(--serif);font-weight:900;
+  font-size:clamp(120px,22vw,300px);line-height:1.02;letter-spacing:.04em;
+}
+.west{
+  margin-top:18px;font-family:var(--west);font-style:italic;
+  font-size:20px;color:var(--muted);letter-spacing:.06em;   /* 西文只做 italic 小字点缀 */
+}
+.hero-img{
+  width:38vw;height:40vh;margin-top:3.5vh;               /* W_MIN=38vw，JS 驱动 → 100vw */
+  border-radius:4px;overflow:hidden;position:relative;z-index:1;
+}
+.img-in{position:absolute;inset:0;transform:scale(1.15)}   /* 图内 scale 1.15 → 1 */
+/* 茶山占位：纯 CSS 渐变/形状（demo 不用真实图像；绿全部灰调，禁高饱和） */
+.sky{position:absolute;inset:0;background:linear-gradient(180deg,#EDE8D8 0%,#E4DEC9 55%,#DAD3BC 100%)}
+.mtn{position:absolute;left:0;right:0;bottom:0}
+.m1{height:64%;background:#8B9A7C;clip-path:polygon(0 100%,0 58%,13% 40%,27% 55%,41% 30%,56% 50%,71% 24%,85% 46%,100% 32%,100% 100%)}
+.m2{height:46%;background:#71846A;clip-path:polygon(0 100%,0 48%,16% 30%,33% 52%,50% 26%,67% 48%,84% 28%,100% 44%,100% 100%)}
+.m3{height:30%;background:#55684B;clip-path:polygon(0 100%,0 42%,20% 24%,40% 48%,60% 20%,80% 44%,100% 26%,100% 100%)}
+.mist{position:absolute;inset:0;background:linear-gradient(180deg,rgba(244,240,230,0) 38%,rgba(244,240,230,.55) 76%,rgba(244,240,230,.88) 100%)}
+.vt{                                                       /* 竖排装饰 */
+  position:absolute;right:3.4vw;top:34%;z-index:2;
+  writing-mode:vertical-rl;letter-spacing:.55em;
+  font-size:15px;color:var(--muted);
+}
+.readout{
+  position:absolute;left:24px;bottom:18px;z-index:3;pointer-events:none;
+  font-size:11px;color:var(--muted);
+}
+.hint{
+  position:absolute;right:24px;bottom:18px;z-index:3;pointer-events:none;
+  font-size:11px;color:var(--muted);
+}
+
+/* ===== 排版节奏：容器 1180px，section padding 150px，分隔只用 hairline ===== */
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+section{padding:150px 0;border-top:1px solid var(--hairline)}
+.lede{max-width:560px;font-size:15px;line-height:1.9;color:var(--muted);margin-bottom:56px}
+.shead{display:flex;align-items:center;gap:14px;margin-bottom:64px}
+.shead .no{color:var(--accent);font-size:22px;font-weight:700}
+.shead .dot{color:var(--muted)}
+.shead .name{font-weight:700;font-size:22px;letter-spacing:.14em}
+.shead .rule64{width:64px;height:1px;background:var(--hairline)}  /* 段标后 64px hairline */
+.shead .params{margin-left:auto;font-size:10px;color:var(--muted)}
+
+/* 色板 swatch：hex + 角色 */
+.swatches{display:flex;gap:34px;flex-wrap:wrap}
+.sw{display:flex;flex-direction:column;gap:10px}
+.sw i{width:44px;height:44px;border-radius:2px;display:block}
+.sw span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.sw em{font-style:normal;font-size:12px;color:var(--ink)}
+
+/* 字阶 specimen：hairline 行式 */
+.spec-row{
+  display:flex;justify-content:space-between;align-items:baseline;gap:32px;flex-wrap:wrap;
+  padding:30px 4px;border-top:1px solid var(--hairline);
+}
+.spec-row .spec{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;text-align:right}
+.t-display{font-weight:900;font-size:72px;line-height:1.1;letter-spacing:.04em}
+.t-west{font-family:var(--west);font-style:italic;font-size:38px;color:var(--ink)}
+.t-mono{font-family:var(--mono);font-weight:300;font-size:15px;letter-spacing:.18em;text-transform:uppercase}
+
+/* 参数 hairline 行式表（hover 苔绿 6% 底） */
+.cols{display:flex;gap:64px;align-items:flex-start;flex-wrap:wrap}
+.ptable{flex:1 1 480px;min-width:0}
+.prow{
+  display:flex;justify-content:space-between;gap:16px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  padding:12px 8px;border-top:1px solid var(--hairline);
+  transition:background .2s;
+}
+.prow:last-child{border-bottom:1px solid var(--hairline)}
+.prow:hover{background:rgba(86,113,75,.06)}   /* 苔绿 6% */
+.prow em{font-style:normal;color:var(--muted)}
+/* 图像处理示例：原图直出无滤镜，hover scale 1.04，2px 微圆角 */
+.figure{flex:0 0 340px}
+.fig-img{
+  width:340px;aspect-ratio:4/3;border-radius:2px;overflow:hidden;position:relative;
+  cursor:pointer;
+}
+.fig-in{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 62% 38%,rgba(244,240,230,.5),rgba(244,240,230,0) 46%),
+    linear-gradient(160deg,#9AA88B 0%,#71846A 48%,#55684B 100%);
+  transition:transform .5s cubic-bezier(.16,1,.3,1);
+}
+.fig-img:hover .fig-in{transform:scale(1.04)}   /* SCALE_HOVER=1.04 */
+.fig-cap{margin-top:12px;font-size:10px;color:var(--muted)}
+
+/* 禁忌：✕ 行（hairline 分隔，不用卡片） */
+.ban-row{
+  display:flex;gap:18px;align-items:baseline;
+  padding:18px 4px;border-top:1px solid var(--hairline);
+  font-size:15px;line-height:1.8;
+}
+.ban-row:last-child{border-bottom:1px solid var(--hairline)}
+.ban-row .x{color:var(--accent);font-weight:700;flex:0 0 auto}
+.ban-row em{font-style:normal;color:var(--muted);font-size:13px}
+
+footer{
+  padding:26px 24px 48px;border-top:1px solid var(--hairline);
+  font-size:10px;color:var(--muted);text-align:center;
+}
+</style>
+</head>
+<body>
+
+<!-- 签名交互 · hero 图 scroll-expand -->
+<div class="hero">
+  <div class="stage">
+    <div class="topline mono">
+      <span>Reference Card — New-Chinese-Editorial</span>
+      <span>Minimal Demo · 签名交互 + 排版令牌</span>
+    </div>
+    <div class="title-wrap">
+      <div class="eyebrow mono">Signature · Hero Scroll-Expand</div>
+      <h1 class="display">山雾</h1>
+      <div class="west">Shan Wu Tea</div>
+    </div>
+    <div class="hero-img" id="heroImg">
+      <div class="img-in" id="heroImgIn">
+        <div class="sky"></div>
+        <div class="mtn m1"></div>
+        <div class="mtn m2"></div>
+        <div class="mtn m3"></div>
+        <div class="mist"></div>
+      </div>
+    </div>
+    <div class="vt">云气入盏</div>
+    <div class="readout mono" id="readout">— · —</div>
+    <div class="hint mono">Scroll ↓ 90vh</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- 一 · 色板 -->
+  <section style="border-top:none">
+    <div class="shead">
+      <span class="no">一</span><span class="dot">·</span><span class="name">色板</span><i class="rule64"></i>
+      <span class="params mono">hex + 角色 · 苔绿唯一强调色</span>
+    </div>
+    <p class="lede">本页只演示参考卡冻结的语法：色板角色、字体配对、scroll-expand 签名交互全参数、hairline 分隔与竖排细节。不放真实文案与图像——卡是语法书，不是课文。</p>
+    <div class="swatches">
+      <div class="sw"><i style="background:#F4F0E6;box-shadow:inset 0 0 0 1px var(--hairline)"></i><span>BG · #F4F0E6</span><em>暖米宣纸底</em></div>
+      <div class="sw"><i style="background:#232B20"></i><span>INK · #232B20</span><em>松烟墨 · 带绿调</em></div>
+      <div class="sw"><i style="background:#56714B"></i><span>ACCENT · #56714B</span><em>苔绿 · 编号/关键词/eyebrow</em></div>
+      <div class="sw"><i style="background:rgba(35,43,32,0.6)"></i><span>MUTED · INK 60%</span><em>次级文字</em></div>
+      <div class="sw"><i style="background:rgba(35,43,32,0.18)"></i><span>HAIRLINE · INK 18%</span><em>分隔全靠它</em></div>
+    </div>
+  </section>
+
+  <!-- 二 · 字阶 -->
+  <section>
+    <div class="shead">
+      <span class="no">二</span><span class="dot">·</span><span class="name">字阶</span><i class="rule64"></i>
+      <span class="params mono">Display 宋体 900 · 西文 italic 点缀 · Mono 参数值</span>
+    </div>
+    <div class="spec-row">
+      <span class="t-display">山雾</span>
+      <span class="spec">Display · Noto Serif SC 900 (fallback Songti SC/STSong) · clamp(120px, 22vw, 300px)</span>
+    </div>
+    <div class="spec-row">
+      <span class="t-west">Shan Wu Tea · No.01</span>
+      <span class="spec">西文点缀 · Cormorant Garamond italic · 品牌罗马字 / 编号</span>
+    </div>
+    <div class="spec-row">
+      <span class="t-mono">W_MIN 38 · Range 90vh</span>
+      <span class="spec">Label/Mono · JetBrains Mono 300 · 中西混排的呼吸感</span>
+    </div>
+  </section>
+
+  <!-- 三 · 参数与图像 -->
+  <section>
+    <div class="shead">
+      <span class="no">三</span><span class="dot">·</span><span class="name">参数与图像</span><i class="rule64"></i>
+      <span class="params mono">hairline 行式表 · hover 苔绿 6% 底</span>
+    </div>
+    <div class="cols">
+      <div class="ptable">
+        <div class="prow"><span>W_MIN</span><em>38vw · 初始居中小图</em></div>
+        <div class="prow"><span>RANGE</span><em>90vh · progress = clamp(scrollY/0.9vh)</em></div>
+        <div class="prow"><span>EASE</span><em>easeOutCubic · 1-(1-p)^3</em></div>
+        <div class="prow"><span>WIDTH</span><em>38vw → 100vw</em></div>
+        <div class="prow"><span>RADIUS</span><em>4px → 0</em></div>
+        <div class="prow"><span>SCALE</span><em>图内 1.15 → 1</em></div>
+      </div>
+      <div class="figure">
+        <div class="fig-img"><div class="fig-in"></div></div>
+        <div class="fig-cap mono">原图直出无滤镜 · hover scale 1.04 · radius 2px</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 四 · 禁忌 -->
+  <section>
+    <div class="shead">
+      <span class="no">四</span><span class="dot">·</span><span class="name">禁忌</span><i class="rule64"></i>
+      <span class="params mono">做了就破功</span>
+    </div>
+    <div class="ban-row"><span class="x">✕</span><p>卡片容器——分隔只用 hairline 和留白 <em>本页所有分区即示范</em></p></div>
+    <div class="ban-row"><span class="x">✕</span><p>粗黑边框 <em>边线一律 1px hairline rgba(35,43,32,.18)</em></p></div>
+    <div class="ban-row"><span class="x">✕</span><p>饱和度高的绿——苔绿必须灰调 <em>唯一合法绿 #56714B</em></p></div>
+    <div class="ban-row"><span class="x">✕</span><p>英文大标题喧宾夺主——中文是主角 <em>西文只做 italic 小字点缀</em></p></div>
+  </section>
+
+</div>
+
+<footer class="mono">
+  BG #F4F0E6 · INK #232B20 · ACCENT #56714B · 容器 1180px · section padding 150px · 段标「一 · 序」+ 64px hairline · 竖排 vertical-rl · W_MIN 38vw / RANGE 90vh / easeOutCubic · 禁卡片 · 禁粗黑边框 · 禁高饱和绿 · 禁英文大标题
+</footer>
+
+<script>
+/* ===== 签名交互：hero 图 scroll-expand，rAF 监听 scroll ===== */
+(function(){
+  var W_MIN=38, RANGE=0.9, R_MAX=4, S_MAX=1.15;   // 参数全部来自参考卡
+  var img=document.getElementById('heroImg'),
+      inner=document.getElementById('heroImgIn'),
+      readout=document.getElementById('readout');
+  var frame=0;
+  function loop(){
+    var vh=window.innerHeight;
+    var p=Math.min(Math.max(window.scrollY/(RANGE*vh),0),1);  // progress = clamp(scrollY/0.9vh)
+    var e=1-Math.pow(1-p,3);                                   // easeOutCubic
+    var w=W_MIN+(100-W_MIN)*e;                                 // 38vw → 100vw
+    var r=R_MAX*(1-e);                                         // 4px → 0
+    var s=S_MAX-(S_MAX-1)*e;                                   // 1.15 → 1
+    img.style.width=w.toFixed(2)+'vw';
+    img.style.borderRadius=r.toFixed(2)+'px';
+    inner.style.transform='scale('+s.toFixed(4)+')';
+    if(++frame%6===0){
+      readout.textContent='Y '+String(Math.round(window.scrollY)).padStart(4,'0')+' · P '+p.toFixed(3)+' · EASED '+e.toFixed(3)+' — SCROLL-EXPAND  |  W '+w.toFixed(1)+'vw · R '+r.toFixed(1)+'px · SCALE '+s.toFixed(3);
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

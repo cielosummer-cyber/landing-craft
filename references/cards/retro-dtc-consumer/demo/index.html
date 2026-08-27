@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>retro-dtc-consumer · 参考卡最小 demo</title>
+<style>
+/* ===== 令牌（从 retro-dtc-consumer.md 冻结取值，不临场发明） ===== */
+:root{
+  --bg:#F7F3E8;              /* 奶油底——全场不熄的货架灯 */
+  --ink:#034638;             /* 深松绿 · 标题 */
+  --ink2:#14433D;            /* 深松绿 · 正文副阶（标题与正文共用族） */
+  --accent:#F5F36A;          /* 柠檬黄 · pill CTA（深绿字） */
+  --hairline:rgba(3,70,56,.18);   /* 由 INK 降 alpha 派生，不另立新色 */
+  --display:"Fraunces","ZCOOL KuaiLe",Georgia,"STZhongsong","Songti SC",serif;      /* 复古粗衬线 900（卡：Fraunces→Georgia；中文 ZCOOL KuaiLe） */
+  --sans:"Nunito Sans","DM Sans","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;  /* 圆润几何无衬线 700（卡：Ano→Nunito Sans/DM Sans） */
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;   /* demo 参数行 chrome，非卡内字体 */
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--bg)}
+body{
+  background:var(--bg);color:var(--ink2);
+  font-family:var(--sans);font-weight:700;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+.mono{font-family:var(--mono);font-weight:400;letter-spacing:.14em;text-transform:uppercase}
+
+/* ===== 公告条：深绿底 + 奶油字（卡内反色运用令牌） ===== */
+.announce{
+  background:var(--ink);color:var(--bg);
+  text-align:center;padding:10px 16px;font-size:11px;
+}
+
+/* ===== hero：大字短句左对齐 + 右半产品图（曲线/圆角是体温） ===== */
+.hero{
+  position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;
+  max-width:1200px;margin:0 auto;padding:72px 48px 96px;align-items:center;
+}
+.topline{
+  font-size:11px;color:var(--ink2);
+  border-bottom:1.5px solid var(--hairline);padding-bottom:14px;margin-bottom:44px;
+  display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;
+}
+h1.display{
+  font-family:var(--display);font-weight:900;color:var(--ink);
+  font-size:clamp(56px,7.5vw,108px);line-height:1.08;letter-spacing:.01em;
+}
+h1.display span{display:block;white-space:nowrap}
+.lede{margin-top:28px;max-width:520px;font-size:15px;line-height:1.9;font-weight:700;color:var(--ink2)}
+.chips{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+.chip{
+  display:inline-block;border:1.5px solid var(--ink);border-radius:999px;
+  color:var(--ink);padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;
+  transition:background .25s,color .25s;                 /* 描边胶囊：hover 填充 */
+}
+.chip:hover{background:var(--ink);color:var(--bg)}
+.cta-row{margin-top:36px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.cta-pill{
+  display:inline-block;background:var(--accent);color:var(--ink);
+  border-radius:999px;padding:15px 34px;font-size:15px;font-weight:800;
+  box-shadow:0 3px 0 var(--ink);                          /* pill CTA：柠檬黄底 + 深绿字 */
+}
+.cta-note{font-size:11px;color:var(--ink2)}
+
+/* hero 右半：纯 CSS 产品罐占位（demo 不用真实图像；配色只用卡内色板撞色） */
+.hero-art{position:relative;height:480px}
+.blob{                                                      /* 柠檬黄圆形色块托底——明快撞色 */
+  position:absolute;right:6%;top:8%;width:340px;height:340px;border-radius:50%;
+  background:var(--accent);
+}
+.hero-can-a{position:absolute;right:16%;top:2%}
+.hero-can-b{position:absolute;right:52%;top:44%}
+
+/* ===== 纯 CSS 产品罐（圆角 + 奶油标签，禁直角硬边） ===== */
+.can{position:relative;width:130px;aspect-ratio:13/22;border-radius:30px}
+.can .lid{
+  position:absolute;top:-4.5%;left:7%;right:7%;height:9%;border-radius:50%;
+}
+.can .shine{
+  position:absolute;top:10%;bottom:10%;left:9%;width:13%;border-radius:999px;
+  background:linear-gradient(rgba(247,243,232,.55),rgba(247,243,232,.08));
+}
+.can .label{
+  position:absolute;left:9%;right:9%;top:36%;
+  background:var(--bg);border-radius:16px;padding:12px 4px;text-align:center;
+}
+.can .label b{
+  display:block;font-family:var(--display);font-weight:900;color:var(--ink);
+  font-size:15px;letter-spacing:.04em;line-height:1.25;
+}
+.can .label i{display:block;font-style:normal;font-size:9px;color:var(--ink2);margin-top:4px;letter-spacing:.18em}
+.can.g1{background:var(--ink)}    .can.g1 .lid{background:var(--ink2)}
+.can.g2{background:var(--ink2)}   .can.g2 .lid{background:var(--ink)}
+.can.y1{background:var(--accent);box-shadow:inset 0 0 0 2px var(--ink)} .can.y1 .lid{background:var(--ink)}
+.can.c1{background:var(--bg);box-shadow:inset 0 0 0 2px var(--ink)} .can.c1 .lid{background:var(--ink2)}
+.can.c1 .label{background:var(--accent)}
+.can.sm{width:92px}
+.can.lg{width:158px}
+
+/* ===== 分区头：hairline + mono 编号/参数行 ===== */
+.panel{padding:88px 48px}
+.phead{
+  display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap;
+  max-width:1200px;margin:0 auto 40px;padding-bottom:14px;
+  border-bottom:1.5px solid var(--hairline);
+}
+.phead .no{font-size:12px;color:var(--ink)}
+.phead .name{font-family:var(--display);font-weight:900;font-size:24px;color:var(--ink);letter-spacing:.04em}
+.phead .params{font-size:10px;color:var(--ink2)}
+
+/* ===== 01 视差漂浮舞台：柠檬黄色块 + 上下波浪曲线分隔 ===== */
+.wave{display:block;line-height:0;background:var(--bg)}
+.wave svg{display:block;width:100%;height:80px}
+.wave.flip{transform:rotate(180deg)}
+.stage-wrap{background:var(--accent)}
+.stage{
+  position:relative;height:88vh;min-height:560px;max-width:1200px;margin:0 auto;
+  overflow:hidden;
+}
+.fl{position:absolute;will-change:transform}     /* JS 按 data-speed 写 translateY */
+.can-in{animation:popIn .9s cubic-bezier(.34,1.56,.64,1) both}   /* 入场轻微回弹 easeOutBack */
+.hero-art .can-in{animation:popIn .9s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes popIn{
+  from{transform:translateY(48px) scale(.94);opacity:0}
+  to{transform:none;opacity:1}
+}
+.readout{
+  position:absolute;left:24px;bottom:18px;pointer-events:none;z-index:5;
+  font-size:11px;color:var(--ink);
+}
+.stage-tag{
+  position:absolute;right:24px;bottom:18px;pointer-events:none;
+  font-size:10px;color:var(--ink);opacity:.7;
+}
+
+/* ===== 02 令牌表：色板 swatch + 字阶 specimen ===== */
+.swatches{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:1.5px;background:var(--hairline);border:1.5px solid var(--hairline);border-radius:20px;overflow:hidden;
+  max-width:1200px;margin:0 auto;
+}
+.sw{background:var(--bg);padding:22px 18px}
+.sw i{display:block;width:36px;height:36px;border-radius:12px;margin-bottom:14px;box-shadow:inset 0 0 0 1.5px var(--hairline)}
+.sw b{display:block;font-size:13px;color:var(--ink)}
+.sw span{font-size:10px;color:var(--ink2)}
+.rows{max-width:1200px;margin:56px auto 0;border-top:1.5px solid var(--hairline)}
+.row{
+  display:flex;justify-content:space-between;align-items:center;gap:32px;
+  padding:26px 4px;border-bottom:1.5px solid var(--hairline);
+}
+.row .spec{font-size:10px;color:var(--ink2);text-align:right;white-space:nowrap}
+.t-display{font-family:var(--display);font-weight:900;font-size:56px;color:var(--ink);line-height:1.1}
+.t-ui{font-size:18px;font-weight:700;color:var(--ink2)}
+.t-announce{
+  display:inline-block;background:var(--ink);color:var(--bg);
+  border-radius:999px;padding:8px 22px;font-size:12px;
+}
+
+/* ===== 03 禁忌：做了就破功（✕ 行，墨水绿） ===== */
+.ban .row{align-items:baseline}
+.ban .x{color:var(--ink);font-weight:800;margin-right:14px}
+.ban p{color:var(--ink2);font-size:15px;line-height:1.8}
+
+footer{
+  max-width:1200px;margin:24px auto 0;padding:24px 48px 56px;
+  border-top:1.5px solid var(--hairline);
+  font-size:10px;color:var(--ink2);
+}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;padding:48px 24px 64px}
+  .hero-art{height:380px}
+  .panel{padding:64px 24px}
+  footer{padding:24px 24px 48px}
+}
+</style>
+</head>
+<body>
+
+<!-- 公告条令牌：深绿底 + 奶油字（反色运用） -->
+<div class="announce mono">Announcement Bar · 深绿底 + 奶油字（反色运用令牌） · Demo Only</div>
+
+<!-- hero：大字短句左对齐 + 右半产品图 -->
+<header class="hero">
+  <div>
+    <div class="topline mono">
+      <span>Reference Card — Retro-DTC-Consumer</span>
+      <span>Minimal Demo · 签名交互 + 排版令牌</span>
+    </div>
+    <h1 class="display">
+      <span>奶油杂货铺</span>
+      <span>明快撞色</span>
+    </h1>
+    <p class="lede">本页只演示参考卡冻结的语法：奶油色板角色、复古粗衬线 × 圆润几何无衬线配对、产品罐视差漂浮全参数、描边胶囊与曲线分隔。不放真实文案与图像——卡是语法书，不是课文。</p>
+    <div class="chips">
+      <span class="chip">食品饮料</span>
+      <span class="chip">个护</span>
+      <span class="chip">宠物</span>
+      <span class="chip">生活方式</span>
+    </div>
+    <div class="cta-row">
+      <span class="cta-pill">Shop Now</span>
+      <span class="cta-note mono">pill CTA · #F5F36A + 深绿字 · 999px 圆角</span>
+    </div>
+  </div>
+  <div class="hero-art">
+    <div class="blob"></div>
+    <div class="hero-can-a"><div class="can-in">
+      <div class="can lg g1"><i class="lid"></i><i class="shine"></i><div class="label"><b>奶油<br>Demo</b><i>NO.01</i></div></div>
+    </div></div>
+    <div class="hero-can-b"><div class="can-in" style="animation-delay:.15s">
+      <div class="can sm y1"><i class="lid"></i><i class="shine"></i><div class="label"><b>撞色<br>Demo</b><i>NO.02</i></div></div>
+    </div></div>
+  </div>
+</header>
+
+<!-- 曲线分隔：奶油 → 柠檬黄（wave 弧形色块交接） -->
+<div class="wave"><svg viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,50 C240,96 480,4 720,50 C960,96 1200,4 1440,50 L1440,90 L0,90 Z" fill="#F5F36A"/></svg></div>
+
+<!-- 01 · 产品罐视差漂浮（签名交互） -->
+<div class="stage-wrap">
+  <section class="panel" style="padding-top:64px;padding-bottom:0">
+    <div class="phead" style="border-bottom-color:rgba(3,70,56,.35)">
+      <div><span class="no mono">01</span>&nbsp;&nbsp;<span class="name">视差漂浮 Parallax</span></div>
+      <div class="params mono">data-speed + rAF translateY · speed 0.03 / 0.06 / 0.1 · 入场 easeOutBack</div>
+    </div>
+  </section>
+  <div class="stage" id="stage">
+    <div class="fl" data-speed="0.03" style="left:6%;top:8%"><div class="can-in" style="animation-delay:.05s">
+      <div class="can g2"><i class="lid"></i><i class="shine"></i><div class="label"><b>慢档<br>0.03</b><i>SPEED</i></div></div>
+    </div></div>
+    <div class="fl" data-speed="0.06" style="left:26%;top:34%"><div class="can-in" style="animation-delay:.2s">
+      <div class="can sm c1"><i class="lid"></i><i class="shine"></i><div class="label"><b>中档<br>0.06</b><i>SPEED</i></div></div>
+    </div></div>
+    <div class="fl" data-speed="0.1" style="left:44%;top:4%"><div class="can-in" style="animation-delay:.35s">
+      <div class="can lg g1"><i class="lid"></i><i class="shine"></i><div class="label"><b>快档<br>0.10</b><i>SPEED</i></div></div>
+    </div></div>
+    <div class="fl" data-speed="0.03" style="right:22%;top:40%"><div class="can-in" style="animation-delay:.5s">
+      <div class="can sm y1"><i class="lid"></i><i class="shine"></i><div class="label"><b>慢档<br>0.03</b><i>SPEED</i></div></div>
+    </div></div>
+    <div class="fl" data-speed="0.1" style="right:5%;top:12%"><div class="can-in" style="animation-delay:.65s">
+      <div class="can g2"><i class="lid"></i><i class="shine"></i><div class="label"><b>快档<br>0.10</b><i>SPEED</i></div></div>
+    </div></div>
+    <div class="readout mono" id="readout">— · —</div>
+    <div class="stage-tag mono">滚动页面 · 罐子按档位漂移</div>
+  </div>
+</div>
+
+<!-- 曲线分隔：柠檬黄 → 奶油 -->
+<div class="wave flip"><svg viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,50 C240,96 480,4 720,50 C960,96 1200,4 1440,50 L1440,90 L0,90 Z" fill="#F5F36A"/></svg></div>
+
+<!-- 02 · 色板与字阶 -->
+<section class="panel">
+  <div class="phead">
+    <div><span class="no mono">02</span>&nbsp;&nbsp;<span class="name">色板与字阶 Tokens</span></div>
+    <div class="params mono">色不临场发明 · 字必须有肉（900 / 700）</div>
+  </div>
+  <div class="swatches">
+    <div class="sw"><i style="background:#F7F3E8"></i><b>BG · 奶油</b><span class="mono">#F7F3E8 · 全场底色</span></div>
+    <div class="sw"><i style="background:#034638"></i><b>INK · 深松绿</b><span class="mono">#034638 · 标题</span></div>
+    <div class="sw"><i style="background:#14433D"></i><b>INK-2 · 深松绿</b><span class="mono">#14433D · 正文副阶</span></div>
+    <div class="sw"><i style="background:#F5F36A"></i><b>ACCENT · 柠檬黄</b><span class="mono">#F5F36A · pill CTA（深绿字）</span></div>
+    <div class="sw"><i style="background:linear-gradient(90deg,#034638 50%,#F7F3E8 50%)"></i><b>反色 · 公告条</b><span class="mono">深绿底 + 奶油字</span></div>
+  </div>
+  <div class="rows">
+    <div class="row"><span class="t-display">Aa 奶油</span><span class="spec mono">Display · Fraunces 900（SOFT/WONK）→ Georgia · 中文 ZCOOL KuaiLe · 40px+</span></div>
+    <div class="row"><span class="t-ui">Aa 奶油——UI 与正文同体，圆润几何无衬线，700 起步。</span><span class="spec mono">UI/正文 · Ano 700 → Nunito Sans / DM Sans · 圆润几何无衬线</span></div>
+    <div class="row">
+      <span><span class="chip">描边胶囊</span>&nbsp;&nbsp;<span class="chip">hover 填充</span></span>
+      <span class="spec mono">chip · 深绿 1.5px 边 · 999px 圆角 · hover 填充深绿、字转奶油</span>
+    </div>
+    <div class="row"><span class="t-announce mono">Announcement · 反色</span><span class="spec mono">公告条 · 深绿底 + 奶油字 · 页面最顶一条</span></div>
+  </div>
+</section>
+
+<!-- 03 · 禁忌（做了就破功） -->
+<section class="panel ban">
+  <div class="phead">
+    <div><span class="no mono">03</span>&nbsp;&nbsp;<span class="name">禁忌——做了就破功</span></div>
+    <div class="params mono">圆角和曲线是这个方向的体温</div>
+  </div>
+  <div class="rows" style="margin-top:0">
+    <div class="row"><p><span class="x">✕</span>暗底——奶油底是这方向的货架灯，全场不熄（深绿只许做公告条/标题/标签这类小面积反色）</p></div>
+    <div class="row"><p><span class="x">✕</span>细瘦字体——这方向字必须「有肉」：Display 900、UI 700，细字重直接出局</p></div>
+    <div class="row"><p><span class="x">✕</span>黑白灰性冷淡——要明快撞色，奶油 × 深松绿 × 柠檬黄三角色板走完全场</p></div>
+    <div class="row"><p><span class="x">✕</span>直角硬边——chip / CTA / 罐子全走 999px 胶囊与大圆角，section 之间用波浪曲线交接</p></div>
+  </div>
+</section>
+
+<footer class="mono">
+  BG #F7F3E8 · INK #034638 / #14433D · ACCENT #F5F36A · Display Fraunces 900（中文 ZCOOL KuaiLe）· UI Ano 700 → Nunito Sans/DM Sans · 视差 speed 0.03/0.06/0.1 + rAF translateY + easeOutBack 入场 · chip 1.5px 描边 hover 填充 · 波浪曲线分隔 · 禁暗底 / 禁细瘦字体 / 禁黑白灰 / 禁直角硬边
+</footer>
+
+<script>
+/* ===== 签名交互：产品罐视差漂浮（参数全部来自参考卡，置顶冻结） ===== */
+(function(){
+  var SPEED_A=0.03, SPEED_B=0.06, SPEED_C=0.1;   // speed 三档（卡冻结值，写在各罐 data-speed 上）
+  var EASE_OUT_BACK='cubic-bezier(.34,1.56,.64,1)'; // 入场轻微回弹（CSS popIn 使用，此处仅回显）
+
+  var stage=document.getElementById('stage'),
+      readout=document.getElementById('readout'),
+      items=Array.prototype.slice.call(stage.querySelectorAll('.fl'));
+  var stageTop=0, frame=0;
+
+  function measure(){
+    stageTop=stage.getBoundingClientRect().top+window.scrollY;
+  }
+  measure();
+  window.addEventListener('resize',measure);
+
+  function fmt(n){return (n>=0?'+':'-')+String(Math.abs(Math.round(n))).padStart(3,'0');}
+
+  function loop(){
+    var d=window.scrollY-stageTop;               // 舞台越过视口顶部的滚动量
+    var rep={};                                   // 每档取一个代表值回显
+    for(var i=0;i<items.length;i++){
+      var el=items[i], s=parseFloat(el.getAttribute('data-speed'));
+      var ty=-d*s;                                // rAF translateY：滚动越快，高档位漂得越多
+      el.style.transform='translateY('+ty.toFixed(1)+'px)';
+      if(rep[s]===undefined)rep[s]=ty;
+    }
+    if(++frame%6===0){
+      readout.textContent=
+        'SCROLL '+fmt(d)+
+        '  ·  ΔY 0.03→'+fmt(rep[SPEED_A]||0)+
+        '  0.06→'+fmt(rep[SPEED_B]||0)+
+        '  0.10→'+fmt(rep[SPEED_C]||0)+
+        '  |  data-speed + rAF · 入场 '+EASE_OUT_BACK;
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

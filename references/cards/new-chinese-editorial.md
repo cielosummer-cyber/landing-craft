@@ -18,6 +18,7 @@
 - Label/Mono: JetBrains Mono 300 — 参数值（中西混排的呼吸感来源）
 
 ## 签名交互
+- 最小演示：`demo/index.html`（零依赖双击直开，签名交互 + 排版令牌全参数；复刻提示词 `demo/PROMPT.md`）
 - 机制：hero 图 scroll-expand——初始 38vw 居中小图，rAF 监听 scroll，`progress = clamp(scrollY/0.9vh)`，easeOutCubic 后映射宽度 38vw→100vw、圆角 4px→0、图内 scale 1.15→1
 - 参数：`W_MIN=38vw`、`RANGE=90vh`、`eased = 1-(1-p)^3`
 

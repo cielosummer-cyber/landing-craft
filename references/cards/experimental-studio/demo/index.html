@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>experimental-studio · 参考卡最小 demo</title>
+<style>
+/* ===== 令牌（从 experimental-studio.md 冻结取值，不临场发明） ===== */
+:root{
+  --bg:#000000;              /* 纯黑（实测） */
+  --ink:#FFFFFF;             /* 纯白（实测） */
+  --muted:rgba(255,255,255,0.5);
+  /* ACCENT：无彩色——强调靠字重、尺寸、下划线动画 */
+  --sans:"Archivo","Space Grotesk","Helvetica Neue",Helvetica,Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; /* grotesque 全场通用，标题正文同族 */
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;   /* demo 参数行专用，非卡内令牌 */
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--bg)}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:var(--sans);font-weight:400;letter-spacing:normal; /* 字距 normal */
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:var(--mono);font-weight:400;letter-spacing:.15em;text-transform:uppercase}
+
+/* ===== 页头：巨型左对齐文本行（排版节奏：堆叠成「目录」，无分隔线无卡片） ===== */
+header{padding:64px 0 40px;margin-left:8vw;max-width:1200px}
+.topline{
+  display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  font-size:11px;color:var(--muted);margin-bottom:56px; /* 卡禁分隔线：分区全靠留白与尺寸 */
+}
+h1.hero{
+  font-weight:400;font-size:clamp(48px,9vw,128px);line-height:1.02;
+  /* 验证修正 1：不加 white-space:nowrap——允许折行，桌面仍单行 */
+}
+h1.hero .hl{display:block;min-height:1.02em} /* min-height 防解码前塌行 */
+.u{                                                /* 下划线动画 = 本卡唯一强调动作 */
+  position:relative;display:inline-block;cursor:pointer;color:var(--ink);text-decoration:none;
+}
+.u::after{
+  content:"";position:absolute;left:0;bottom:-3px;width:100%;height:1px;background:var(--ink);
+  transform:scaleX(0);transform-origin:left;transition:transform .2s cubic-bezier(.16,1,.3,1);
+}
+.u:hover::after{transform:scaleX(1)}
+.replay{margin-top:28px;font-size:13px}
+.lede{
+  margin-top:36px;max-width:600px;
+  font-size:15px;line-height:1.9;color:var(--muted);
+}
+.readout{margin-top:26px;font-size:11px;color:var(--muted)}
+
+/* 色板 swatch（hex + 角色）；禁圆角——全部直角 */
+.swatches{display:flex;gap:26px;flex-wrap:wrap;margin-top:48px}
+.sw{display:flex;flex-direction:column;gap:10px}
+.sw i{width:36px;height:36px;display:block}
+.sw span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.sw.none i{                                         /* ACCENT=无：黑底斜杠示意「空」 */
+  box-shadow:inset 0 0 0 1px var(--muted);
+  background:linear-gradient(to top right,transparent calc(50% - 1px),var(--muted) calc(50% - 1px),var(--muted) 50%,transparent 50%);
+}
+
+/* 字阶 specimen：行式罗列，无网格无卡片 */
+.specimen{margin-top:48px;display:flex;flex-direction:column;gap:22px}
+.sp{display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap}
+.sp .spec{font-size:10px;color:var(--muted);text-align:right}
+.sp-d{font-size:79px;line-height:1.1}                /* Display 400 79px 级 */
+.sp-i{font-size:40px;line-height:1.15}               /* 目录条目 40px 级 */
+.sp-b{font-size:16px;line-height:1.7;color:var(--muted)}
+.sp-m{font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase}
+
+/* ===== 01 作品目录：签名交互主场 ===== */
+.zone{margin-top:96px;margin-left:8vw;max-width:1200px}
+.zhead{display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap;margin-bottom:40px}
+.zhead .no{font-size:12px;color:var(--muted)}
+.zhead .name{font-weight:400;font-size:24px}
+.zhead .params{font-size:10px;color:var(--muted)}
+.works{list-style:none}
+.wi{
+  display:flex;align-items:baseline;gap:36px;padding:30px 0;cursor:pointer;
+  transition:opacity .2s ease;                  /* sibling dim 200ms */
+}
+.works:hover .wi{opacity:.25}                    /* 验证修正 2①：sibling dim 0.25 */
+.works .wi:hover{opacity:1}                      /* 当前条目保持 1 */
+.wi .num{font-family:var(--mono);font-size:11px;letter-spacing:.15em;color:var(--muted)}
+.wi .nm{
+  position:relative;font-weight:400;font-size:clamp(32px,4.6vw,64px);line-height:1.1;
+}
+.wi .nm::after{                                  /* hover 下划线动画 */
+  content:"";position:absolute;left:0;bottom:-4px;width:100%;height:2px;background:var(--ink);
+  transform:scaleX(0);transform-origin:left;transition:transform .2s cubic-bezier(.16,1,.3,1);
+}
+.wi:hover .nm::after{transform:scaleX(1)}
+.wi .tag{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase}
+
+/* 浮动预览图：340×227（3:2），不常驻布局，pointer-events:none */
+.preview{
+  position:fixed;left:0;top:0;width:340px;height:227px;z-index:60;
+  pointer-events:none;overflow:hidden;opacity:0;
+  transition:opacity .2s cubic-bezier(.16,1,.3,1); /* 200ms EASE_OUT_EXPO */
+}
+.preview.on{opacity:1}
+.ph{position:absolute;inset:0}
+/* 占位图形：纯 CSS 单色（黑/白/灰）直角几何——守「禁彩色渐变、禁圆角」 */
+.ph.p1{background:#0A0A0A}
+.ph.p1::before{content:"";position:absolute;left:24px;top:24px;width:150px;height:150px;background:#FFF}
+.ph.p1::after{content:"";position:absolute;right:36px;bottom:30px;width:64px;height:64px;background:var(--muted)}
+.ph.p2{background:repeating-linear-gradient(45deg,#FFF 0 14px,#0A0A0A 14px 28px)}
+.ph.p3{background:linear-gradient(90deg,#FFF 50%,#0A0A0A 50%)}
+.ph.p4{background:#0A0A0A;
+  background-image:
+    repeating-linear-gradient(0deg,transparent 0 22px,rgba(255,255,255,.85) 22px 24px),
+    repeating-linear-gradient(90deg,transparent 0 22px,rgba(255,255,255,.85) 22px 24px);
+}
+.ph.p5{background:#0A0A0A;
+  background-image:
+    linear-gradient(45deg,transparent 48.5%,#FFF 48.5%,#FFF 51.5%,transparent 51.5%),
+    linear-gradient(-45deg,transparent 48.5%,#FFF 48.5%,#FFF 51.5%,transparent 51.5%);
+}
+.preadout{
+  position:fixed;left:24px;bottom:18px;z-index:70;pointer-events:none;
+  font-size:11px;color:var(--muted);
+  opacity:0;transition:opacity .2s ease;   /* 只在预览跟随期间出现，避免常驻遮挡内容 */
+}
+.preadout.on{opacity:1}
+
+/* ===== 02 禁忌：✕ 行，纯文本 ===== */
+.ban p{font-size:clamp(20px,2.4vw,32px);line-height:1.35;padding:12px 0}
+.ban .x{font-family:var(--mono);font-size:.62em;color:var(--muted);margin-right:18px;letter-spacing:0}
+
+footer{
+  margin:96px 0 48px;margin-left:8vw;max-width:1200px;
+  font-size:10px;color:var(--muted);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topline mono">
+    <span>Reference Card — Experimental-Studio</span>
+    <span>Minimal Demo · 签名交互 Text Scramble + 排版令牌</span>
+  </div>
+  <h1 class="hero" id="hero">
+    <span class="hl" data-text="实验工作室">实验工作室</span>
+    <span class="hl" data-text="作品即内容">作品即内容</span>
+    <span class="hl" data-text="纯黑与白字">纯黑与白字</span>
+  </h1>
+  <a class="u replay mono" id="replay">重新解码 Replay</a>
+  <p class="lede">本页只演示参考卡冻结的语法：色板角色、grotesque 字阶、text scramble 解码全参数与「目录」三配套（hover 解码刷新 / sibling dim / 浮动预览跟随）。不放真实文案与图像——卡是语法书，不是课文。</p>
+  <div class="readout mono" id="sreadout">SCRAMBLE · 待机</div>
+  <div class="swatches">
+    <div class="sw"><i style="background:#000000;box-shadow:inset 0 0 0 1px var(--muted)"></i><span>BG · #000000 纯黑</span></div>
+    <div class="sw"><i style="background:#FFFFFF"></i><span>INK · #FFFFFF 纯白</span></div>
+    <div class="sw"><i style="background:rgba(255,255,255,0.5)"></i><span>MUTED · rgba(255,255,255,.5)</span></div>
+    <div class="sw none"><i></i><span>ACCENT · 无彩色</span></div>
+  </div>
+  <div class="specimen">
+    <div class="sp"><span class="sp-d">Aa 实验</span><span class="spec mono">Display · HelveticaNowDisplay 400 · 79px 级 · 字距 normal · fallback Archivo / Space Grotesk</span></div>
+    <div class="sp"><span class="sp-i">Aa 占位作品条目</span><span class="spec mono">目录条目 · 同族 400 · 40px 级</span></div>
+    <div class="sp"><span class="sp-b">Aa 标题正文同族，靠尺寸阶梯区分——grotesque 无衬线全场通用。</span><span class="spec mono">正文 · 同族 400 · 16px</span></div>
+    <div class="sp"><span class="sp-m">SCRAMBLE · 30ms/帧 · stagger 150ms</span><span class="spec mono">Mono · demo 参数行专用 · 11px</span></div>
+  </div>
+</header>
+
+<!-- 01 · 作品目录 -->
+<section class="zone" id="index">
+  <div class="zhead">
+    <div><span class="no mono">01</span>&nbsp;&nbsp;<span class="name">作品目录 Work Index（整行可点，hover 触发三配套）</span></div>
+    <div class="params mono">dim .25/200ms · lerp .12 · 340×227 · +24/-h/2 · 200ms EASE_OUT_EXPO</div>
+  </div>
+  <ul class="works" id="works">
+    <li class="wi" data-v="p1"><span class="num">01</span><span class="nm" data-text="占位作品·甲">占位作品·甲</span><span class="tag">Identity</span></li>
+    <li class="wi" data-v="p2"><span class="num">02</span><span class="nm" data-text="占位作品·乙">占位作品·乙</span><span class="tag">Website</span></li>
+    <li class="wi" data-v="p3"><span class="num">03</span><span class="nm" data-text="占位作品·丙">占位作品·丙</span><span class="tag">Motion</span></li>
+    <li class="wi" data-v="p4"><span class="num">04</span><span class="nm" data-text="占位作品·丁">占位作品·丁</span><span class="tag">Type</span></li>
+    <li class="wi" data-v="p5"><span class="num">05</span><span class="nm" data-text="占位作品·戊">占位作品·戊</span><span class="tag">Space</span></li>
+  </ul>
+</section>
+<div class="preview" id="preview"><div class="ph p1" id="ph"></div></div>
+<div class="preadout mono" id="preadout">PREVIEW · IDLE</div>
+
+<!-- 02 · 禁忌 -->
+<section class="zone ban" id="ban">
+  <div class="zhead">
+    <div><span class="no mono">02</span>&nbsp;&nbsp;<span class="name">禁忌——做了就破功</span></div>
+    <div class="params mono">这个方向的结构本身就是表达</div>
+  </div>
+  <p><span class="x">✕</span>任何装饰元素——图标 / 分隔线 / 按钮样式全是多余的</p>
+  <p><span class="x">✕</span>圆角</p>
+  <p><span class="x">✕</span>彩色渐变</p>
+  <p><span class="x">✕</span>「Section 标题 + 描述 + 网格」常规结构</p>
+</section>
+
+<footer class="mono">
+  BG #000000 · INK #FFFFFF · MUTED rgba(255,255,255,.5) · ACCENT 无（字重/尺寸/下划线动画强调）· grotesque 同族字阶 · scramble 30ms/帧 · settle=index+rand(2,3) · stagger 150ms · 禁装饰 / 禁圆角 / 禁彩色渐变 / 禁常规结构
+</footer>
+
+<script>
+/* ===== 参数（全部冻结自 experimental-studio.md，含验证修正回填） ===== */
+var POOL='!<>-_\\/[]{}—=+*^?#';   // scramble 字符池（18 字符）
+var FRAME_MS=30;                   // 帧率 ~30ms：rAF 内 now-last>=30 节流，不能裸跑 rAF
+var RAND_MIN=2, RAND_SPAN=2;       // 每字符随机期 2-3 帧；settle 帧 = index + rand(2,3)
+var STAGGER_MS=150;                // 行间 stagger：hero 三行 0/150/300ms setTimeout 启动
+var DIM_OPACITY=0.25, DIM_MS=200;  // sibling 条目 dim（CSS 侧 .works:hover 实现）
+var PREVIEW_LERP=0.12;             // 浮动预览跟随缓动
+var PREVIEW_W=340, PREVIEW_H=227;  // 3:2
+var OFF_X=24;                      // translate(鼠标x + 24px, 鼠标y - 图高/2)
+var SHOT=/[?&]shot=1/.test(location.search);  // ?shot=1：scramble 直接写完成态，预览图保持隐藏
+
+/* ===== text scramble：逐行从随机字符解码到目标文案 ===== */
+var sreadout=document.getElementById('sreadout');
+var heroSettled=0, heroLines=0;
+function scramble(el, onSettle){
+  var text=el.getAttribute('data-text');
+  var run=(el._run=(el._run||0)+1);   // 重入令牌：hover 连续触发时作废旧轮
+  var settle=[], pool=POOL+text, i;   // 替换字符从「字符池 + 目标文案字符」联合采样
+  for(i=0;i<text.length;i++) settle.push(i+RAND_MIN+Math.floor(Math.random()*RAND_SPAN));
+  var frame=0, last=0;
+  function tick(now){
+    if(el._run!==run) return;
+    if(now-last>=FRAME_MS){
+      last=now; frame++;
+      var out='', done=true;
+      for(i=0;i<text.length;i++){
+        if(frame>=settle[i]) out+=text[i];
+        else{ done=false; out+=pool.charAt(Math.floor(Math.random()*pool.length)); }
+      }
+      el.textContent=out;
+      if(el._hero){
+        sreadout.textContent='SCRAMBLE · LINE '+(el._idx+1)+'/'+heroLines+' · FRAME '+frame+' · SETTLED '+heroSettled+'/'+heroLines+
+          '  |  POOL '+POOL.length+'ch+目标字符 · '+FRAME_MS+'ms/帧 · settle=index+rand(2,3) · stagger '+STAGGER_MS+'ms';
+      }
+      if(done){ if(onSettle) onSettle(); return; }
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+/* hero 三行 0/150/300ms 启动；?shot=1 直接写完成态 */
+(function(){
+  var lines=document.querySelectorAll('#hero .hl');
+  heroLines=lines.length;
+  lines.forEach(function(el,i){
+    el._hero=true; el._idx=i;
+    if(SHOT){ heroSettled++; return; }  // HTML 已带完成态文案
+    el.textContent='';                  // 先清空：未轮到的行保持空行，依次解码
+    setTimeout(function(){
+      scramble(el,function(){
+        heroSettled++;
+        if(heroSettled===heroLines){
+          sreadout.textContent='SCRAMBLE · SETTLED '+heroLines+'/'+heroLines+
+            '  |  POOL '+POOL.length+'ch+目标字符 · '+FRAME_MS+'ms/帧 · settle=index+rand(2,3) · stagger '+STAGGER_MS+'ms';
+        }
+      });
+    }, i*STAGGER_MS);
+  });
+  if(SHOT) sreadout.textContent='SCRAMBLE · SHOT 模式完成态  |  POOL '+POOL.length+'ch+目标字符 · '+FRAME_MS+'ms/帧 · settle=index+rand(2,3) · stagger '+STAGGER_MS+'ms';
+  document.getElementById('replay').addEventListener('click',function(){
+    heroSettled=0;
+    lines.forEach(function(el,i){
+      setTimeout(function(){
+        scramble(el,function(){
+          heroSettled++;
+          if(heroSettled===heroLines){
+            sreadout.textContent='SCRAMBLE · SETTLED '+heroLines+'/'+heroLines+
+              '  |  POOL '+POOL.length+'ch+目标字符 · '+FRAME_MS+'ms/帧 · settle=index+rand(2,3) · stagger '+STAGGER_MS+'ms';
+          }
+        });
+      }, i*STAGGER_MS);
+    });
+  });
+})();
+
+/* ===== 作品目录：hover 解码刷新 + 浮动预览 lerp 跟随（dim 纯 CSS） ===== */
+(function(){
+  var works=document.getElementById('works'),
+      preview=document.getElementById('preview'),
+      ph=document.getElementById('ph'),
+      preadout=document.getElementById('preadout');
+  var tx=window.innerWidth/2, ty=window.innerHeight/2, x=tx, y=ty, on=false, frame=0;
+  document.addEventListener('pointermove',function(e){ tx=e.clientX; ty=e.clientY; });
+  works.querySelectorAll('.wi').forEach(function(wi){
+    wi.addEventListener('mouseenter',function(){
+      scramble(wi.querySelector('.nm'));          // 列表项 hover 同样解码刷新
+      if(SHOT) return;                            // shot 模式预览图保持隐藏
+      ph.className='ph '+wi.getAttribute('data-v');
+      preview.classList.add('on'); on=true;
+    });
+  });
+  works.addEventListener('mouseleave',function(){
+    preview.classList.remove('on'); on=false;
+  });
+  function loop(){
+    x+=(tx-x)*PREVIEW_LERP; y+=(ty-y)*PREVIEW_LERP;
+    preview.style.transform='translate('+(x+OFF_X).toFixed(1)+'px,'+(y-PREVIEW_H/2).toFixed(1)+'px)';
+    if(++frame%6===0){
+      preadout.style.opacity=on?'1':'0';   // 只在跟随期间显示，避免常驻遮挡内容
+      preadout.textContent='PREVIEW · X '+String(Math.round(x)).padStart(4,'0')+' · Y '+String(Math.round(y)).padStart(4,'0')+
+        ' — '+(on?'FOLLOW · 指针跟随':'IDLE · 待机')+
+        '  |  LERP='+PREVIEW_LERP+' · '+PREVIEW_W+'×'+PREVIEW_H+' · OFF +'+OFF_X+'/-H/2 · 200ms EASE_OUT_EXPO';
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

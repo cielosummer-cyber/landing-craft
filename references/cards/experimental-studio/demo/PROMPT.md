@@ -1,0 +1,5 @@
+# 复刻提示词 · experimental-studio 最小 demo
+
+> 用法：把下面这段贴给 agent，可复刻出本 demo 的语法骨架（令牌 + 签名交互），再按单子主题替换内容。
+
+复刻 experimental-studio 参考卡最小 demo：单文件零依赖 HTML，纯黑底 #000000、纯白字 #FFFFFF、MUTED rgba(255,255,255,0.5)，无彩色 accent——强调只靠字重、尺寸、下划线动画（::after scaleX 0→1，200ms cubic-bezier(.16,1,.3,1)）。grotesque 无衬线全场通用（Display HelveticaNowDisplay / LocomotiveNew 400 79px 级，免费替代 Archivo / Space Grotesk，系统 fallback Helvetica Neue），标题正文同族、靠尺寸阶梯区分，字距 normal，巨型左对齐文本行堆叠成「目录」（clamp(48px,9vw,128px)，禁 white-space:nowrap 允许折行），无传统卡片网格。签名交互 text scramble 解码：标题逐行从随机字符解码到目标文案，字符池 `!<>-_\\/[]{}—=+*^?#`，替换字符从「字符池 + 目标文案字符」联合采样，帧率 30ms（rAF 内 `now-last>=30` 节流，不裸跑 rAF），每字符 settle 帧 = index + rand(2,3)、天然从左到右依次解码，行间 stagger 150ms（三行 0/150/300ms setTimeout 启动），mono 参数行实时回显 LINE/FRAME/SETTLED。作品目录三配套：整行可点，hover 时①当前条目名同样解码刷新 ②sibling 条目 dim 到 opacity 0.25（200ms）、当前保持 1 ③浮动预览图跟随鼠标——340×227（3:2），lerp 0.12 缓动，translate(鼠标x+24px, 鼠标y-图高/2)，出现/消失 200ms cubic-bezier(.16,1,.3,1)（EASE_OUT_EXPO），pointer-events:none，图不常驻布局（demo 用纯 CSS 黑白直角几何占位），mono 参数行实时回显 X/Y/LERP。禁忌（做了就破功）：任何装饰元素（图标/分隔线/按钮样式全是多余的）、圆角、彩色渐变、「section 标题 + 描述 + 网格」常规结构——这个方向的结构本身就是表达。`?shot=1`：scramble 直接写完成态文案，hover 预览图保持隐藏。

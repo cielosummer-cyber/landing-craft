@@ -21,6 +21,7 @@
 - UI/正文: Ano 700（免费替代：Nunito Sans / DM Sans，圆润几何无衬线）
 
 ## 签名交互
+- 最小演示：`demo/index.html`（零依赖双击直开，签名交互 + 排版令牌全参数；复刻提示词 `demo/PROMPT.md`）
 - 机制：产品罐/瓶视差漂浮——多个人物/产品图按不同速率随滚动上下漂移（data-speed 属性 + rAF translateY）
 - 参数：speed 分三档 0.03 / 0.06 / 0.1；入场用轻微回弹 easeOutBack
 
