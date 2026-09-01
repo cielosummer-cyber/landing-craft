@@ -4,7 +4,7 @@
 ![形态](https://img.shields.io/badge/%E5%BD%A2%E6%80%81-Agent%20Skill-0f6fff)
 ![验收](https://img.shields.io/badge/%E9%AA%8C%E6%94%B6-Playwright-45a17b)
 ![开源](https://img.shields.io/badge/%E5%BC%80%E6%BA%90-%E6%9A%82%E6%9C%AA%E5%BC%80%E6%BA%90-9aa4ab)
-![参考卡](https://img.shields.io/badge/%E5%8F%82%E8%80%83%E5%8D%A1-12%20%E5%BC%A0-4ea08e)
+![参考卡](https://img.shields.io/badge/%E5%8F%82%E8%80%83%E5%8D%A1-13%20%E5%BC%A0-4ea08e)
 
 把「做个好看的落地页」变成一条可重复的流水线。核心认知：**值钱的是把设计意图写成精确参数，工具层全是可替代的免费件**——Agent 负责精确执行，人负责审美决策。零边际成本，全部本地完成。
 
@@ -36,9 +36,9 @@ scripts/
 assets/snippets/       可复用动效片段（preloader / scroll-expand / clip-reveal 等）
 ```
 
-## 参考卡（12 张，全部带最小 demo + 复刻提示词）
+## 参考卡（13 张，全部带最小 demo + 复刻提示词）
 
-`crimson-data-atlas` 绛红数据图谱 · `teal-solar-rings` 黛青节令环谱（同心环点读交互）· `hairline-archive-portal` · `digital-heritage-immersive` · `new-chinese-editorial` · `slow-magazine-editorial` · `dark-tech-saas` · `dark-gold-luxury` · `deep-space-atlas` · `experimental-studio` · `archive-dossier` · `retro-dtc-consumer`
+`crimson-data-atlas` 绛红数据图谱 · `teal-solar-rings` 黛青节令环谱（同心环点读交互）· `hall-touch-wall` 展厅触控巨幕（待机自演+触摸直达）· `hairline-archive-portal` · `digital-heritage-immersive` · `new-chinese-editorial` · `slow-magazine-editorial` · `dark-tech-saas` · `dark-gold-luxury` · `deep-space-atlas` · `experimental-studio` · `archive-dossier` · `retro-dtc-consumer`
 
 卡只记可执行令牌与禁忌——禁忌栏写不出来说明这个方向还没看懂。
 
