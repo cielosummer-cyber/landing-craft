@@ -1,8 +1,14 @@
 # landing-craft · 高级美学落地页流水线
 
+![状态](https://img.shields.io/badge/%E7%8A%B6%E6%80%81-%E7%A7%81%E6%9C%89%E6%89%93%E7%A3%A8%E4%B8%AD-d9a441)
+![形态](https://img.shields.io/badge/%E5%BD%A2%E6%80%81-Agent%20Skill-0f6fff)
+![验收](https://img.shields.io/badge/%E9%AA%8C%E6%94%B6-Playwright-45a17b)
+![开源](https://img.shields.io/badge/%E5%BC%80%E6%BA%90-%E6%9A%82%E6%9C%AA%E5%BC%80%E6%BA%90-9aa4ab)
+![参考卡](https://img.shields.io/badge/%E5%8F%82%E8%80%83%E5%8D%A1-12%20%E5%BC%A0-4ea08e)
+
 把「做个好看的落地页」变成一条可重复的流水线。核心认知：**值钱的是把设计意图写成精确参数，工具层全是可替代的免费件**——Agent 负责精确执行，人负责审美决策。零边际成本，全部本地完成。
 
-> 当前状态：私有打磨中，未开源。
+> 当前状态：私有打磨中，未开源。by 周颖（@cielosummer-cyber）
 
 ## 流水线五段
 
