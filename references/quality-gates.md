@@ -38,3 +38,5 @@
 - `img` 必须同时写 `width:100%;height:auto`（或等价约束）——只写 `max-width:100%` 会被拉伸到原始像素高度、整版塌陷（CIELO V5 卷宗单实测翻车）
 - 视差/漂浮元素用 JS 覆写 `transform` 会吞掉 CSS 里的 `rotate/scale`——固定形变走 `data-*` 由 JS 合成（野柠单实测翻车）
 - fullPage 截图里 fixed/sticky nav 重复出现在中段 = 截图伪影，不是 bug，不打回
+- shoot.mjs 弱网下字体阻塞可能 goto 超时 → 截图全白（页面其实正常）。先复跑；仍白再排查（2026-08-28 中医药图谱单实测）
+- 组图徽章可一次生成后裁切：3K 网格提示词（「3x4 grid of circular medallion badges」）+ ffmpeg 按圆心 crop，风格统一且省配额（2026-08-28 实测 Seedream 网格对齐全靠运，裁前肉眼核对圆心坐标）

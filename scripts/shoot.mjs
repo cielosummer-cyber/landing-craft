@@ -44,11 +44,19 @@ const page = await browser.newPage({ viewport: VP });
 const errors = [];
 page.on('pageerror', e => errors.push(String(e)));
 
-// Google Fonts 弱网会拖死 load 事件（2026-08-20 实测）：字体请求 8s 拿不到就放弃，页面走 fallback 字体
-await page.route(/fonts\.(googleapis|gstatic)\.com/, async route => {
-  const resp = await route.fetch({ timeout: 8000 }).catch(() => null);
-  if (resp) await route.fulfill({ response: resp }); else await route.abort();
-});
+// Google Fonts 策略（2026-08-28 重构）：先 4s 预检，网络健康就不拦截（route 拦截会把 CJK 几十个 woff2 分片拖过
+// goto 超时，页面来不及 paint 出全白截图）；弱网/离线则直接整域 abort，页面秒开走 fallback 字体
+let fontsOK = false;
+try {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 4000);
+  const r = await fetch('https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap', { signal: ctrl.signal });
+  clearTimeout(t); fontsOK = r.ok;
+} catch {}
+if (!fontsOK) {
+  console.log('warn: Google Fonts 预检失败，屏蔽字体域名走 fallback');
+  await page.route(/fonts\.(googleapis|gstatic)\.com/, route => route.abort().catch(() => {}));
+}
 
 try {
   await page.goto(url, { timeout: 20000 });

@@ -1,2 +1,3 @@
 .DS_Store
 scripts/models/*.pth
+shot-*.png

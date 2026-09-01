@@ -1,0 +1,3 @@
+# crimson-data-atlas 复刻提示词
+
+> 做一张「暗夜绛红数据图谱」页：深绛黑底（#241016）叠同色锦缎暗纹；左上标题区——宋/隶风 900 重中文巨标题（玫红 #e87a90 → 金 #d9a441 渐变填充、letter-spacing .04em）+ Cormorant italic 英文小字一行 + 副标题带双侧 hairline 翼线；中央偏左一个大圆（直径 ≈62vh，可出血边缘），SVG 外环玫红渐变弧以 stroke-dashoffset 从全长扫到 0（1.6s ease-in-out），同心虚线环（rgba(245,230,207,.28), dash 4 8）随后淡入；环上沿轨道均布 5 个圆形 medallion（64px、1px 金描边、深底 #2e1420、宋体金字），顺时针 scale .6→1 back-out 弹出、stagger 120ms；其余信息面板格式 = ✦描金小方块 + 玫红小节名 + 延伸 hairline，正文 10.5px/1.7 灰玫 rgba(192,138,149,.85) 密集注解，无卡片无边框。编排顺序：底纹→标题→主视觉→外环扫描→medallion pop→面板骨架→正文→图表生长，总时长 8–12s，`?shot=1` 全部置完成态，reduced-motion 直接完成态。禁忌：亮底卡片 / 第二个强调色抢戏 / emoji 图标 / 粗黑无衬线标题 / 大留白。

@@ -1,0 +1,44 @@
+# 绛红数据图谱 参考卡（crimson-data-atlas）
+
+- 来源：小红书视频「阶层之境-北魏女性服饰身份图谱」（荒年设计），本地 `/Users/zhouying/tcm-atlas/reference.mp4`（12.4s / 2038×1440 / 30fps，2fps 抽帧 25 张逐帧分析提取）
+- 气质关键词：暗夜锦缎、玫红描金、环形仪轨、密集注解、图谱感
+- 适用：文博 / 非遗 / 中医药 / 历史文化类的数据可视化首屏、信息图表式海报页
+- 不适用：SaaS、消费 DTC、慢杂志等需要大量留白呼吸感的场景
+
+## 色板（带角色，不临场发明新色）
+- BG: `#241016` — 深绛黑底（叠同色锦缎暗纹，纹样与底明度差 8–12%）
+- INK: `#f5e6cf` — 米白主文字（实测云纹高光 `#f9e7c8`）
+- ACCENT: `#c94f6d` — 玫红，环形主描边 / 面板标记 / 图表主色；高光端 `#e87a90`、深端 `#8e2f47`
+- GOLD: `#d9a441` — 描金，仅用于标签牌 / 小节序号 / ✦ 分隔符
+- MUTED: `rgba(192,138,149,.85)` — 次要文字（灰玫）
+- HAIRLINE: `rgba(245,230,207,.28)` — 分区细线 / 标题翼线 / 虚线环
+- TEAL: `#4aa88c` — 辅助撞色（云气 / 地图省块 / 描边勾线），全场用量 <10%
+
+## 字体配对
+- Display 中文: Noto Serif SC 900 + `letter-spacing:.04em` + 玫红→金线性渐变填充（fallback `"Songti SC", "STSong", serif`）— 只给主标题/副标题
+- 英文副标题: Cormorant Garamond italic 小号（fallback Georgia）— 标题旁一行，opacity .7
+- Label/正文: Noto Sans SC 400（fallback `PingFang SC, sans-serif`）— 密集注释小字
+- 数字/年代: tabular-nums 衬线（Cormorant 或 Georgia）— 时间轴年代、图表数值
+
+## 签名交互
+- 机制：「圆镜扫描构建」——首屏环形图谱 dashboard 按固定编排出生长成，禁滚动 scrub。顺序：锦缎底纹淡入(600ms) → 标题块(400ms) → 主视觉插画自底部升起(800ms) → 外环玫红弧顺时针扫入(SVG stroke-dashoffset 全长→0, 1600ms ease-in-out) + 同心虚线环淡入 → 轨道 medallion 沿弧顺时针逐个 pop(scale .6→1, back-out 缓动, stagger 120ms) → 各信息面板先 hairline 骨架(400ms)后正文(600ms)stagger 淡入 → 图表生长(柱图 left→right / 地图分省着色 / 矩阵 medallion 依序 pop) → 底部文字带淡入
+- 参数：总时长 ≈8–12s；外环弧 sweep 1.6s；medallion stagger 120ms；骨架领先正文 200ms；`?shot=1` 全部置完成态
+
+## 排版节奏
+- 单屏 dashboard：标题区左上（中文标题 2 行 clamp(40–64px) + 英文一行小字 + 副标题带双侧 hairline 翼线）
+- 中央偏左大圆主视觉（直径 ≈62vh，可出血左/下边缘）；右侧与下方信息面板
+- 小节头格式：`✦序号` 描金小方块 + 玫红小节名 + 延伸 hairline + ✦ 尾饰
+- 正文 10–11px 级密集排布，行高 1.7，muted 色；面板间无卡片无边框，全靠 hairline + 留白分区
+
+## 图像处理
+- 插画：扁平国风，玫红/金/青绿撞色 + 深色底上亮色描边；medallion 一律圆形裁切 + 1px 金或玫红描边
+- 地图：扁平多色省块 + 浅色省界 1px + 右侧单列图例（色块 10px 方 + 小字）
+- 全部图像深色融底：透明底 PNG 直接叠，或 `mix-blend-mode: screen` 去黑底；禁白底图片直接贴
+
+## 禁忌（这个方向做了就破功的事）
+- 禁亮底卡片 / 白色面板 —— 一律深底 + hairline 分区
+- 禁玫红以外的强调色抢戏 —— 金与青绿只做点缀（合计 <15% 画面）
+- 禁 emoji 风 / 3D 风图标 —— medallion 必须统一圆形仪轨感
+- 禁大留白慢节奏 —— 这个方向靠密度、注解与仪轨感取胜
+- 禁标题用粗黑无衬线 —— 必须宋/隶风艺术字 + 渐变填充
+- 禁滚动驱动 reveal —— 它是「一张图自己长出来」，不是滚动叙事

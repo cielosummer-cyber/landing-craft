@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>crimson-data-atlas · demo</title>
+<style>
+  :root{
+    --bg:#241016; --ink:#f5e6cf; --accent:#c94f6d; --accent-hi:#e87a90;
+    --gold:#d9a441; --muted:rgba(192,138,149,.85); --hairline:rgba(245,230,207,.28);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:"Noto Sans SC","PingFang SC",sans-serif;
+       min-height:100vh;overflow:hidden;position:relative}
+  /* 锦缎暗纹 */
+  body::before{content:"";position:absolute;inset:0;opacity:.5;
+    background-image:radial-gradient(circle at 25% 25%, rgba(201,79,109,.06) 0 60px, transparent 61px),
+                     radial-gradient(circle at 75% 75%, rgba(217,164,65,.05) 0 80px, transparent 81px);
+    background-size:220px 220px, 340px 340px;animation:bgIn .6s ease both}
+  @keyframes bgIn{from{opacity:0}to{opacity:.5}}
+
+  .title{position:absolute;top:40px;left:48px;animation:fadeUp .4s .6s both}
+  .title h1{font-family:"Noto Serif SC","Songti SC",serif;font-weight:900;font-size:52px;letter-spacing:.04em;
+    background:linear-gradient(135deg,var(--accent-hi),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .title .en{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-size:13px;opacity:.7;margin:6px 0 10px}
+  .title .sub{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--muted)}
+  .title .sub::before,.title .sub::after{content:"";width:56px;height:1px;background:var(--hairline)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  .stage{position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);width:min(62vh,62vw);aspect-ratio:1}
+  .ring{position:absolute;inset:0}
+  .ring circle{fill:none;transform:rotate(-90deg);transform-origin:center}
+  .ring .sweep{stroke:url(#g1);stroke-width:14;stroke-linecap:round;
+    stroke-dasharray:var(--C);stroke-dashoffset:var(--C);animation:sweep 1.6s 1.4s ease-in-out both}
+  .ring .dash{stroke:var(--hairline);stroke-width:1;stroke-dasharray:4 8;opacity:0;animation:fadeIn .8s 2.6s both}
+  @keyframes sweep{to{stroke-dashoffset:0}}
+  @keyframes fadeIn{to{opacity:1}}
+
+  .medal{position:absolute;width:64px;height:64px;border-radius:50%;border:1px solid var(--gold);
+    background:#2e1420;display:flex;align-items:center;justify-content:center;
+    font-family:"Noto Serif SC","Songti SC",serif;font-weight:700;font-size:22px;color:var(--gold);
+    transform:scale(.6);opacity:0;animation:pop .5s cubic-bezier(.34,1.56,.64,1) both}
+  @keyframes pop{to{transform:scale(1);opacity:1}}
+
+  .head{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--accent-hi);letter-spacing:.1em}
+  .head i{width:8px;height:8px;background:var(--gold);transform:rotate(45deg)}
+  .head::after{content:"";flex:1;height:1px;background:var(--hairline)}
+  .panel{position:absolute;width:220px;animation:fadeUp .6s both}
+  .panel p{margin-top:10px;font-size:10.5px;line-height:1.7;color:var(--muted)}
+  .p1{right:48px;top:120px;animation-delay:3.2s}
+  .p2{right:48px;bottom:80px;animation-delay:3.6s}
+
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;opacity:1!important;transform:none!important}}
+</style>
+</head>
+<body>
+  <div class="title">
+    <h1>图谱之境</h1>
+    <div class="en">A Mapping of Cultural Atlas</div>
+    <div class="sub">可视化解读信息图表</div>
+  </div>
+
+  <div class="stage">
+    <svg class="ring" viewBox="0 0 400 400">
+      <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#e87a90"/><stop offset="1" stop-color="#8e2f47"/>
+      </linearGradient></defs>
+      <circle class="sweep" cx="200" cy="200" r="180" style="--C:1131"/>
+      <circle class="dash"  cx="200" cy="200" r="150"/>
+      <circle class="dash"  cx="200" cy="200" r="196"/>
+    </svg>
+    <!-- 轨道上 5 个 medallion，顺时针 stagger -->
+    <div class="medal" style="left:calc(50% - 32px);top:-32px;animation-delay:3.0s">壹</div>
+    <div class="medal" style="right:-8px;top:calc(29% - 32px);animation-delay:3.12s">贰</div>
+    <div class="medal" style="right:calc(15% - 32px);bottom:-24px;animation-delay:3.24s">叁</div>
+    <div class="medal" style="left:calc(15% - 32px);bottom:-24px;animation-delay:3.36s">肆</div>
+    <div class="medal" style="left:-8px;top:calc(29% - 32px);animation-delay:3.48s">伍</div>
+  </div>
+
+  <div class="panel p1">
+    <div class="head"><i></i>面板小节</div>
+    <p>密集注解小字走灰玫色，行高 1.7，面板间不留卡片、不描边框，全靠 hairline 与留白分区。</p>
+  </div>
+  <div class="panel p2">
+    <div class="head"><i></i>图例说明</div>
+    <p>玫红是唯一强调色；金与青绿只做点缀，合计不超过画面 15%。</p>
+  </div>
+</body>
+</html>
