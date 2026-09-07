@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>organic-aura · 参考卡最小 demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== 令牌（从 organic-aura.md 冻结取值，不临场发明） ===== */
+:root{
+  --bg:#FFFFFF; --ink:#000000; --muted:#6E6E73;
+  --faint:rgba(0,0,0,.25); --pill-bg:#F4F4F6; --pill-line:rgba(0,0,0,.15);
+  --disp:"Outfit",ui-sans-serif,system-ui,sans-serif;
+  --body:"Inter",ui-sans-serif,system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px}
+.disp{font-family:var(--disp);font-weight:500;letter-spacing:-0.025em}
+
+/* ── 顶栏：胶囊是唯一的容器形态 ── */
+header{position:fixed;top:24px;left:40px;right:40px;z-index:10;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:500;font-size:17px;letter-spacing:-0.02em}
+.brand i{width:9px;height:9px;background:var(--ink);border-radius:50%;display:block}
+.pill{border-radius:999px;display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--body)}
+.pill-black{background:var(--ink);color:#fff;font-size:12px;font-weight:500;padding:4px 20px 4px 4px;border:1px solid rgba(0,0,0,.03)}
+.pill-black b{width:28px;height:28px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-size:14px;font-weight:400}
+.pill-gray{background:var(--pill-bg);color:var(--ink);font-size:14px;font-weight:400;padding:10px 24px;border:1px solid rgba(0,0,0,.03)}
+.pill-gray span+span{opacity:.45;margin-left:14px}
+.pill-line{background:#fff;color:var(--ink);font-size:11.5px;font-weight:400;padding:14px 24px;border:1px solid var(--pill-line)}
+
+/* ── hero ── */
+.hero{position:relative;height:100vh;min-height:640px;overflow:hidden}
+#aura{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero-title{position:absolute;top:38%;left:0;right:0;text-align:center;z-index:2}
+.hero-title h1{font-family:var(--disp);font-weight:500;font-size:79.5px;line-height:.9;letter-spacing:-0.025em}
+.hero-title h1 .faint{font-weight:300;color:var(--faint)}
+.hero-foot{position:absolute;left:40px;bottom:44px;z-index:2;max-width:300px}
+.hero-foot .cap{font-size:12px;color:var(--muted);margin-bottom:10px}
+.hero-foot p{font-size:18px;line-height:1.45;color:var(--muted)}
+.hero-tags{position:absolute;right:40px;bottom:44px;z-index:2;display:flex;gap:12px}
+
+/* ── 内容节：左题右编号 ── */
+section.block{max-width:1280px;margin:0 auto;padding:150px 40px;display:flex;justify-content:space-between;gap:80px}
+.block .l{max-width:420px}
+.block .l h2{font-family:var(--disp);font-weight:500;font-size:58px;line-height:.98;letter-spacing:-0.025em;margin-bottom:24px}
+.block .l p{font-size:18px;line-height:1.45;color:var(--muted)}
+.block .r{text-align:right;flex:none}
+.block .r .num{font-size:13px;color:var(--muted);margin-bottom:14px}
+.block .r h3{font-family:var(--disp);font-weight:500;font-size:32px;line-height:1.15;letter-spacing:-0.02em}
+.block .r h3 span{display:block}
+.block .r .sub{font-size:15px;line-height:1.6;color:var(--muted);margin-top:16px;max-width:280px;margin-left:auto}
+
+/* ── 页脚：领域词即导航 ── */
+footer{border-top:none;max-width:1280px;margin:0 auto;padding:60px 40px 40px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px}
+footer .w{font-family:var(--disp);font-weight:500;font-size:16px;cursor:pointer;transition:opacity .2s}
+footer .w:hover{opacity:.4}
+.params{max-width:1280px;margin:0 auto;padding:0 40px 36px;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:11px;color:rgba(0,0,0,.35);letter-spacing:.08em}
+
+@media (max-width:900px){
+  .hero-title h1{font-size:44px}
+  section.block{flex-direction:column;padding:90px 24px}
+  .block .r{text-align:left}
+  .block .r .sub{margin-left:0}
+  header{left:20px;right:20px}
+  .hero-foot{left:20px}.hero-tags{right:20px}
+}
+/* ?shot=1：无入场动画依赖，光晕冻结由 JS 短路保证 */
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:14px">
+    <div class="brand"><i></i>AuraLab</div>
+    <span class="pill pill-black"><b>+</b>Menu</span>
+  </div>
+  <span class="pill pill-gray">柔光系统<span>有机界面</span></span>
+  <span class="pill pill-line">Adaptive Glow</span>
+</header>
+
+<div class="hero">
+  <canvas id="aura"></canvas>
+  <div class="hero-title">
+    <h1>OrganicAura<br><span class="faint">breathing</span> soft machines</h1>
+  </div>
+  <div class="hero-foot">
+    <div class="cap">Autonomous Dynamics</div>
+    <p>把机器的智能，设计成有呼吸感的生命体。</p>
+  </div>
+  <div class="hero-tags">
+    <span class="pill pill-line">Neuromorphic</span>
+    <span class="pill pill-line">AGI</span>
+    <span class="pill pill-line">Cybernetics</span>
+  </div>
+</div>
+
+<section class="block">
+  <div class="l">
+    <h2>为呼吸而建</h2>
+    <p>生物的直觉，自适应的智能。人与机器之间，更自然的连接方式。</p>
+  </div>
+  <div class="r">
+    <div class="num">01 / 柔光引擎</div>
+    <h3><span>感知。</span><span>理解。</span><span>呼吸。</span></h3>
+    <div class="sub">读懂周遭的世界，从每一次交互中学习，在当下作出回应。</div>
+  </div>
+</section>
+
+<footer>
+  <span class="w">Bionics</span><span class="w">Cognition</span><span class="w">Perception</span><span class="w">Robotics</span><span class="w">Adaptation</span><span class="w">Synthesis</span>
+</footer>
+<div class="params">AURA — FBM 5 阶 · DRIFT (0.006,0.0032)·t · 饱和 ≤40% · PASTEL COS PALETTE · SHOT 冻结 t=8.0</div>
+
+<script>
+(function(){
+  const SHOT = new URLSearchParams(location.search).has('shot');
+  const cv = document.getElementById('aura');
+  const gl = cv.getContext('webgl', {antialias:false, alpha:false});
+  if(!gl){ cv.style.background = 'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(244,190,200,.5), rgba(180,220,210,.4) 55%, #fff 78%)'; return; }
+
+  const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+  const FS = `
+precision highp float;
+uniform vec2 uRes; uniform float uTime;
+float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+float noise(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);
+  return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x), mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x), f.y); }
+float fbm(vec2 p){ float v=0.0, a=0.5; for(int i=0;i<5;i++){ v+=a*noise(p); p*=2.03; a*=0.5; } return v; }
+void main(){
+  vec2 p = (gl_FragCoord.xy - 0.5*uRes) / min(uRes.x, uRes.y);
+  float t = uTime;
+  vec2 q = p*1.7 + vec2(t*0.6, -t*0.35);
+  float n = fbm(q + 0.6*fbm(q + t*0.15));
+  float d = length(p - vec2(0.0, 0.06));
+  float mask = smoothstep(0.64, 0.16, d + (n-0.5)*0.38);
+  float a1 = fract(atan(p.y, p.x)/6.28318 + 0.5 + n*0.55 + t*0.08);
+  vec3 col = 0.90 + 0.16*cos(6.28318*(a1 + vec3(0.0, 0.33, 0.67)));
+  col = clamp(col, 0.0, 1.0);
+  float alpha = mask * (0.42 + 0.38*n);
+  gl_FragColor = vec4(mix(vec3(1.0), col, alpha), 1.0);
+}`;
+  function sh(type, src){ const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+  gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+  gl.linkProgram(prog); gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(prog, 'p');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const uRes = gl.getUniformLocation(prog, 'uRes');
+  const uTime = gl.getUniformLocation(prog, 'uTime');
+  function resize(){
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    cv.width = cv.clientWidth * dpr; cv.height = cv.clientHeight * dpr;
+    gl.viewport(0, 0, cv.width, cv.height);
+  }
+  resize(); addEventListener('resize', resize);
+  /* 漂移速度换算：着色器内 q 走 (0.6,-0.35)·t，t = 秒×0.01 → 等效 uv 漂移 (0.006,0.0035)·s */
+  const T0 = performance.now();
+  function frame(){
+    const t = SHOT ? 8.0 : (performance.now() - T0) / 1000 * 0.01 + 8.0;
+    gl.uniform2f(uRes, cv.width, cv.height);
+    gl.uniform1f(uTime, t);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    if(!SHOT) requestAnimationFrame(frame);
+  }
+  frame();
+})();
+</script>
+</body>
+</html>
