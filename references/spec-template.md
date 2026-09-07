@@ -41,5 +41,5 @@
 
 ## 两个真实 spec 参考
 
-- 暗金奢华方向：`~/k3-replica-demo/spec.md`
-- 浅底新中式方向：`~/k3-replica-shanwu/spec.md`（含素材阶梯的实战记录）
+- 暗金奢华方向：内部验证单 spec.md
+- 浅底新中式方向：内部验证单 spec.md（含素材阶梯的实战记录）

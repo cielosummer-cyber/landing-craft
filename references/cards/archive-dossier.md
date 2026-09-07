@@ -1,6 +1,6 @@
 # 卷宗档案 参考卡（✅ 已自建验证）
 
-- 来源：niccolomiranda.com「Paper Portfolio」（Awwwards 纸感作品集，2026-08-20 实地提取）× 中文卷宗/档案本土转译；验证单：`~/landing-cielo/` V3→V4（周颖个人页）
+- 来源：niccolomiranda.com「Paper Portfolio」（Awwwards 纸感作品集，2026-08-20 实地提取）× 中文卷宗/档案本土转译；验证单：内部项目 V3→V4（个人页）
 - 验证修正：
   1. V3 纯文字卷宗被判「太简陋」——**这个方向必须配「档案附件」图**：波普版画插图（白边相框 + 微倾 + 胶带贴角）与卷宗骨架绝配；持卷人肖像贴封面右栏（白边照片 + 胶带 +「持卷人」图注）
   2. 整套配图风格锁定公共提示词段（实测五张一次成，描边/网点/四色/纸底完全一致）："Pop-art comic illustration in Roy Lichtenstein style: bold black outlines, Ben-Day halftone dots, flat color blocks. Palette strictly limited to: seal red #C03A2B, warm black #1A1714, mustard gold #C9A869, deep teal #2E5E4E. Background: warm cream archival paper #E7DFCB."

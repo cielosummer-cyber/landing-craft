@@ -20,4 +20,4 @@
 
 三个 `bg-*` 背景片段的共用约定：canvas fixed 定位 z-index 0、pointer-events:none、DPR 上限 2、`visibilitychange` 暂停 rAF；`?shot=1` 渲染一个固定时间点的静态帧后停循环（flow-field 用固定种子 PRNG 同步预滚 1500 帧，两次截图 sha 一致；两个 WebGL 片段固定 u_time）。`bg-cloud-field` 的 SHOT_T 是 GPU 实测选出来的（GLSL sin 大参数精度与 JS 不一致，CPU 预算流星周期会落空），换时间点必须重新实测。
 
-来源项目：`landing-cielo-v5-dossier`（stamp / redact / ch-rise）、`landing-cielo-v5-chinese`（scroll-expand）、`landing-cielo-v5-magazine`（clip-reveal）、`heart-ui.vercel.app` × `robot-game-3d-sq5l.vercel.app`（preloader，scratch 页实测 pageerror 0）、`threeui`（MIT，github.com/MengTo/threeui；bg-flow-field / bg-topo-field / bg-cloud-field，scratch 页实测 pageerror 0）。
+来源项目：内部项目（stamp / redact / ch-rise / scroll-expand / clip-reveal）、`heart-ui.vercel.app` × `robot-game-3d-sq5l.vercel.app`（preloader，scratch 页实测 pageerror 0）、`threeui`（MIT，github.com/MengTo/threeui；bg-flow-field / bg-topo-field / bg-cloud-field，scratch 页实测 pageerror 0）。

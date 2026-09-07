@@ -15,16 +15,19 @@ description: 高级美学落地页固定流水线：素材阶梯（CC 免费图�
 
 | 卡 | 方向 | 状态 |
 |---|---|---|
-| `dark-gold-luxury.md` | 暗金奢华（腕表/珠宝/烈酒） | ✅ 自建验证（`~/k3-replica-demo/`） |
-| `new-chinese-editorial.md` | 新中式编辑风（茶/香/东方生活方式） | ✅ 自建验证（`~/k3-replica-shanwu/`） |
-| `dark-tech-saas.md` | 暗夜科技（开发者工具/AI 产品，源 raycast.com） | ✅ 自建验证（`~/landing-sable/`） |
-| `retro-dtc-consumer.md` | 复古消费 DTC（食品饮料/个护，源 drinkolipop.com） | ✅ 自建验证（`~/landing-yeling/`） |
-| `slow-magazine-editorial.md` | 慢杂志 editorial（出版/展览/文化，源 kinfolk.com） | ✅ 自建验证（`~/landing-yuanan/`） |
-| `experimental-studio.md` | 实验工作室（agency/作品集，源 locomotive.ca） | ✅ 自建验证（`~/landing-northfield/`） |
-| `deep-space-atlas.md` | 深空星图（知识图谱/文化科技，⚠️ 仅限 Cielo 本人品牌项目使用——个人页场景被本人否决） | ✅ 自建验证（`~/landing-cielo/` V2） |
-| `archive-dossier.md` | 卷宗档案（个人品牌/出版/文化机构，源 niccolomiranda.com × 中文卷宗转译） | ✅ 自建验证（`~/landing-cielo/` V3） |
-| `digital-heritage-immersive.md` | 数字非遗·暗夜流光（非遗/文博/展馆大屏，源 teamlab.art × hkpm.org.hk × ihchina.cn 对照） | ✅ 自建验证（`~/landing-heritage-test/`，回填主动断行规则） |
-| `hairline-archive-portal.md` | 细笔档案门户（多分库文化数字化门户首屏，源 e-dunhuang.com 实地提取；与 digital-heritage-immersive 在「压暗 hero」「中文巨标题字重」两点上正相反，禁混用） | ✅ 自建验证（`~/landing-xingtu-claude/`，双平台对决首用，回填 5 条修正） |
+| `dark-gold-luxury.md` | 暗金奢华（腕表/珠宝/烈酒） | ✅ 自建验证 |
+| `new-chinese-editorial.md` | 新中式编辑风（茶/香/东方生活方式） | ✅ 自建验证 |
+| `dark-tech-saas.md` | 暗夜科技（开发者工具/AI 产品，源 raycast.com） | ✅ 自建验证 |
+| `retro-dtc-consumer.md` | 复古消费 DTC（食品饮料/个护，源 drinkolipop.com） | ✅ 自建验证 |
+| `slow-magazine-editorial.md` | 慢杂志 editorial（出版/展览/文化，源 kinfolk.com） | ✅ 自建验证 |
+| `experimental-studio.md` | 实验工作室（agency/作品集，源 locomotive.ca） | ✅ 自建验证 |
+| `deep-space-atlas.md` | 深空星图（知识图谱/文化科技） | ✅ 自建验证 |
+| `archive-dossier.md` | 卷宗档案（个人品牌/出版/文化机构，源 niccolomiranda.com × 中文卷宗转译） | ✅ 自建验证 |
+| `digital-heritage-immersive.md` | 数字非遗·暗夜流光（非遗/文博/展馆大屏，源 teamlab.art × hkpm.org.hk × ihchina.cn 对照） | ✅ 自建验证（回填主动断行规则） |
+| `hairline-archive-portal.md` | 细笔档案门户（多分库文化数字化门户首屏，源 e-dunhuang.com 实地提取；与 digital-heritage-immersive 在「压暗 hero」「中文巨标题字重」两点上正相反，禁混用） | ✅ 自建验证（回填 5 条修正） |
+| `crimson-data-atlas.md` | 绛红数据图谱（文博/历史文化数据可视化首屏、信息图表式海报页，源公开视频抽帧提取） | ✅ 自建验证 |
+| `teal-solar-rings.md` | 黛青节令环谱（同心环点读交互/四季色数据编码，与 crimson-data-atlas 同系列） | ✅ 自建验证 |
+| `hall-touch-wall.md` | 展厅触控巨幕（待机生息+指尖直达双态签名交互，4K 远读字号阶梯，无 hover/无声/深底） | ✅ 自建验证 |
 
 基准卡 = 从真实优秀站点提取的令牌，尚未经自建验证；首次被单子使用时验收加倍严格，用后把状态改为 ✅ 并回填修正。
 
@@ -38,7 +41,7 @@ description: 高级美学落地页固定流水线：素材阶梯（CC 免费图�
 
 ### 0 · 定方向（参考卡驱动，禁止凭空发明风格）
 
-**记忆门禁（已知用户/品牌必做）**：为老熟人或已知品牌做单时，选卡前先 `memory_recall` 查两件事——这人的审美基准是什么、有没有被否决过的方向。否决记录一票有效：记忆里说「XX 方向被本人否决」，这个方向直接出局，不得重蹈。查不到再走下面的常规流程。
+**记忆门禁（环境具备长期记忆时必做）**：若 agent 环境配有长期记忆工具（如 MCP `memory_recall`），为老熟人或已知品牌做单时，选卡前先查两件事——这人的审美基准是什么、有没有被否决过的方向。否决记录一票有效：记忆里说「XX 方向被本人否决」，这个方向直接出局，不得重蹈。无此能力或查不到再走下面的常规流程。
 
 方向只能有两个来源，优先级从高到低：
 

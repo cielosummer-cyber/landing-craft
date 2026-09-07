@@ -2,7 +2,7 @@
 
 - 来源：`e-dunhuang.com`（数字敦煌官方门户首屏，2026-08-27 **实地提取**：kimi-webbridge 打开 → `evaluate` 抽 computedStyle + Swiper 实例参数 → `screenshot` 存证）。证据截图 `refs/hairline-archive-portal/`（e-dunhuang-hero.jpg、e-dunhuang-home-full-2026-08-27.png、e-dunhuang-home-state-02-stable-2026-08-27.png）
 - 证据等级：**实地提取**（色值/字号/字重/圆角/动画时长/标签尺寸全部来自 `getComputedStyle` 与 `swiper.params` 实测，非目测取色）
-- 验证单：`~/landing-xingtu-claude/`（2026-08-27 赣鄱星图四分库门户，双平台同卡同题对决首用，8 条禁忌全过、pageerror 0）；对照单 `~/landing-xingtu-codex/`（文献库一幕选图过亮破功——见验证修正 4）
+- 验证单：内部项目（2026-08-27 四分库文化数字化门户，双平台同卡同题对决首用，8 条禁忌全过、pageerror 0）；对照单：内部项目（文献库一幕选图过亮破功——见验证修正 4）
 - 验证修正：
   1. demo 首版被双平台对审打回：发明棕色渐变 / `hue-rotate` 装饰 / CTA hover `brightness(1.15)` 无证据 / 宣称 loop 却未实现无缝——demo 整体换用对侧审计候选（首尾克隆真无缝 loop + 5px 拖动阈值 + resistanceRatio .85）。教训：**demo 里的视觉占位也只许用卡内令牌或中性灰阶**
   2. 幽灵水印落在照片最暗区时感知趋零（.03 × RGB 0–12）——用卡时让水印部分压到中间调或主体亮区边缘，否则它只是近看彩蛋

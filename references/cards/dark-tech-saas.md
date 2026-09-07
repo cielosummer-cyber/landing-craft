@@ -1,6 +1,6 @@
 # 暗夜科技 参考卡（✅ 已自建验证）
 
-- 来源：raycast.com（2026-08-20 提取）；验证单：`~/landing-sable/`（SABLE CLI，2026-08-20 验收通过）
+- 来源：raycast.com（2026-08-20 提取）；验证单：内部项目（SABLE CLI，2026-08-20 验收通过）
 - 验证修正：
   1. TOML/代码块容器必须显式 `white-space: pre-wrap`——HTML 默认吞换行，首跑翻车一次
   2. Playwright fullPage 截图里 fixed 胶囊 nav 会重复出现在页面中段——是截图机制伪影，不是 bug，验收时不用管

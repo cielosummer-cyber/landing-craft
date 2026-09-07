@@ -1,6 +1,6 @@
 # 深空星图 参考卡（✅ 已自建验证）
 
-- 来源：`~/jiangxi-culture-atlas/public/share-card.jpg` + 其 `DESIGN.md` 设计系统 + `~/graph-memory/content/architecture.png`（2026-08-20 提取）；验证单：`~/landing-cielo/`（周颖个人页，同日验收通过）
+- 来源：内部文化图谱项目分享卡图 + 其 DESIGN.md 设计系统 + 内部知识图谱架构图（2026-08-20 提取）；验证单：内部项目（个人页，同日验收通过）
 - 验证修正：
   1. `?shot=1` 模式下 count-up 数字的 IntersectionObserver 必须禁用——否则截图抓到动画中间值（45,000 截成 44,956）。所有带动画终态的 JS 组件在 shot 模式都要直接置终态且不挂 observer
   2. canvas 星座在纯 headless 截图下表现良好（单帧静态即成立），但「鼠标增亮连线」要用 `?shot=1` + 手动 mouse.move 才能验证——shoot.mjs 的中段滚动顺带覆盖了
