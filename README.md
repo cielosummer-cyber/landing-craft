@@ -2,7 +2,7 @@
 
 ![形态](https://img.shields.io/badge/%E5%BD%A2%E6%80%81-Agent%20Skill-0f6fff)
 ![验收](https://img.shields.io/badge/%E9%AA%8C%E6%94%B6-Playwright-45a17b)
-![参考卡](https://img.shields.io/badge/%E5%8F%82%E8%80%83%E5%8D%A1-7%20%E5%BC%A0-4ea08e)
+![参考卡](https://img.shields.io/badge/%E5%8F%82%E8%80%83%E5%8D%A1-8%20%E5%BC%A0-4ea08e)
 ![License](https://img.shields.io/badge/License-MIT-d9a441)
 ![展示站](https://img.shields.io/badge/%E5%B1%95%E7%A4%BA%E7%AB%99-GitHub%20Pages-FF6363)
 
@@ -37,9 +37,9 @@ ln -s "$PWD" ~/.agents/skills/landing-atelier   # 或 ~/.codex/skills/ 等
 - `scripts/gen_image.sh`：备用通道，需本机 codex CLI 已登录 ChatGPT；没有就跳过
 - `scripts/shoot.mjs`：截图验收。必须传**绝对路径**；Playwright 从 npx 缓存动态定位，首次先跑 `npx -y playwright --version`
 
-## 参考卡（7 张，除 dark-gold-luxury 外均带最小 demo + 复刻提示词）
+## 参考卡（8 张，除 dark-gold-luxury 外均带最小 demo + 复刻提示词）
 
-`dark-tech-saas` 暗夜科技 · `dark-gold-luxury` 暗金奢华 · `new-chinese-editorial` 新中式编辑风 · `retro-dtc-consumer` 复古消费 DTC · `slow-magazine-editorial` 慢杂志 · `experimental-studio` 实验工作室 · `hall-touch-wall` 展厅触控巨幕
+`dark-tech-saas` 暗夜科技 · `dark-gold-luxury` 暗金奢华 · `new-chinese-editorial` 新中式编辑风 · `retro-dtc-consumer` 复古消费 DTC · `slow-magazine-editorial` 慢杂志 · `experimental-studio` 实验工作室 · `hall-touch-wall` 展厅触控巨幕 · `organic-aura` 有机光晕
 
 卡只记可执行令牌与禁忌——禁忌栏写不出来说明这个方向还没看懂。逐卡详情与在线 demo 见展示站。
 

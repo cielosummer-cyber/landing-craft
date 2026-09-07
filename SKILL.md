@@ -22,7 +22,7 @@ description: 高级美学落地页固定流水线：素材阶梯（CC 免费图�
 | `slow-magazine-editorial.md` | 慢杂志 editorial（出版/展览/文化，源 kinfolk.com） | ✅ 自建验证 |
 | `experimental-studio.md` | 实验工作室（agency/作品集，源 locomotive.ca） | ✅ 自建验证 |
 | `hall-touch-wall.md` | 展厅触控巨幕（待机生息+指尖直达双态签名交互，4K 远读字号阶梯，无 hover/无声/深底） | ✅ 自建验证 |
-| `organic-aura.md` | 有机光晕（AI/机器人/生物科技浅色品牌页，源 hand-touch-omega.vercel.app 实地提取；WebGL 柔焦光晕 + 双色字重对比标题 + 胶囊 UI） | ⏳ 基准卡（2026-09-07 提取，首单使用验收加倍严格） |
+| `organic-aura.md` | 有机光晕（AI/机器人/生物科技浅色品牌页，源 hand-touch-omega.vercel.app 实地提取；WebGL 柔焦光晕 + 双色字重对比标题 + 胶囊 UI） | ✅ 自建验证（2026-09-07 demo 目检转正） |
 
 基准卡 = 从真实优秀站点提取的令牌，尚未经自建验证；首次被单子使用时验收加倍严格，用后把状态改为 ✅ 并回填修正。
 

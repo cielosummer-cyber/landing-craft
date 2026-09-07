@@ -10,7 +10,7 @@
 ## 内容结构（5 段）
 1. **Hero**：整段极致居中。mono eyebrow → 64px 级巨标题「landing-atelier」→ 中文定位一句 → 安装命令代码块（ln -s 软链）→ GitHub / Pages 两个文字链。签名交互两层氛围光在 hero 边缘跟手
 2. **流水线五段**：20px Label 题注「流水线」+ 五步（0 定方向 / 1 素材阶梯 / 2 工程级 spec / 3 单文件 HTML / 4 截图验收），每步一句可执行要点，参数即文案；分隔用 hairline 不用卡片
-3. **方向卡画廊（页面主体）**：20px Label 题注「方向卡 · 7」+ 3 列 grid；每卡 = demo 截图（10px 圆角 + 0.1 alpha 细白边 + 深投影悬浮）+ 方向名 + 气质关键词 + 签名交互一行 + 禁忌一句
+3. **方向卡画廊（页面主体）**：20px Label 题注「方向卡 · 8」+ 3 列 grid；每卡 = demo 截图（10px 圆角 + 0.1 alpha 细白边 + 深投影悬浮）+ 方向名 + 气质关键词 + 签名交互一行 + 禁忌一句
 4. **质量门与红线**：两条红线（学语法不抄课文 / 参考卡只提取设计语法不含内容资产）+ 质量门硬指标一行 mono 参数
 5. **Footer**：by 周颖（@cielosummer-cyber）· MIT · GitHub 仓库链接 + mono 参数行（lerp / 光斑 opacity / 半径）
 
@@ -23,6 +23,7 @@
 - `CARD_NEWCN` = `assets/cards/new-chinese-editorial.jpg`（新中式编辑风 demo 首屏，64KB）
 - `CARD_RETRO` = `assets/cards/retro-dtc-consumer.jpg`（复古消费 DTC demo 首屏，118KB）
 - `CARD_SLOWMAG` = `assets/cards/slow-magazine-editorial.jpg`（慢杂志 demo 首屏，82KB）
+- `CARD_AURA` = `assets/cards/organic-aura.jpg`（有机光晕 demo 首屏，92KB）
 许可：全部为 skill 仓库内自产截图，无外部素材，随仓库 MIT。
 
 ## Constants
@@ -50,4 +51,4 @@
 
 ## 灵感来源与差异（originality audit 预留）
 - 拿走：dark-tech-saas 卡的令牌级语法——`#07080A` 近黑底、单 accent、Inter 字阶、居中 hero + 大留白节奏、氛围光跟手机制与参数、截图图像处理规（圆角/细白边/深投影）
-- 没拿：不复制 raycast.com 的布局结构、文案、图像与段落顺序；内容（流水线五段、7 卡画廊、质量门红线）全部为本项目自有
+- 没拿：不复制 raycast.com 的布局结构、文案、图像与段落顺序；内容（流水线五段、8 卡画廊、质量门红线）全部为本项目自有

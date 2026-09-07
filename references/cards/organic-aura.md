@@ -1,4 +1,6 @@
-# 有机光晕 参考卡（organic-aura）· ⏳ 基准卡（未验证）
+# 有机光晕 参考卡（organic-aura · ✅ 已自建验证）
+
+- 转正：2026-09-07 提取当日用户目检 demo 通过，基准卡转正入库
 
 - 来源：`hand-touch-omega.vercel.app`（NeuralKinetics，2026-09-07 **实地提取**：agent-browser 打开 → `eval` 抽 computedStyle + 逐屏截图存证 `/tmp/ht-*.png`）
 - 证据等级：**实地提取**（色值/字号/字重/字距/圆角全部来自 getComputedStyle 实测；光晕为 WebGL 画布，参数为目测+机制推断）
