@@ -3,3 +3,4 @@ scripts/models/*.pth
 shot-*.png
 references/cards/refs/
 local.md
+local-cards/

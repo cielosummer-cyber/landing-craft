@@ -120,7 +120,7 @@ const SHOT=new URLSearchParams(location.search).has('shot');
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 if(SHOT) document.getElementById('stage').classList.add('shot');
 
-/* ══ 01 WebGL2 体积星云底（语法移植自 deep-space-atlas demo，金色调至展厅金 #E3B34E，镜头改自主漫游） ══ */
+/* ══ 01 WebGL2 体积星云底（语法移植自内部深空星图 demo，金色调至展厅金 #E3B34E，镜头改自主漫游） ══ */
 (function(){
   const canvas=document.getElementById('gl');
   const gl=canvas.getContext('webgl2',{antialias:false,alpha:false});

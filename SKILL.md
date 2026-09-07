@@ -21,12 +21,6 @@ description: 高级美学落地页固定流水线：素材阶梯（CC 免费图�
 | `retro-dtc-consumer.md` | 复古消费 DTC（食品饮料/个护，源 drinkolipop.com） | ✅ 自建验证 |
 | `slow-magazine-editorial.md` | 慢杂志 editorial（出版/展览/文化，源 kinfolk.com） | ✅ 自建验证 |
 | `experimental-studio.md` | 实验工作室（agency/作品集，源 locomotive.ca） | ✅ 自建验证 |
-| `deep-space-atlas.md` | 深空星图（知识图谱/文化科技） | ✅ 自建验证 |
-| `archive-dossier.md` | 卷宗档案（个人品牌/出版/文化机构，源 niccolomiranda.com × 中文卷宗转译） | ✅ 自建验证 |
-| `digital-heritage-immersive.md` | 数字非遗·暗夜流光（非遗/文博/展馆大屏，源 teamlab.art × hkpm.org.hk × ihchina.cn 对照） | ✅ 自建验证（回填主动断行规则） |
-| `hairline-archive-portal.md` | 细笔档案门户（多分库文化数字化门户首屏，源 e-dunhuang.com 实地提取；与 digital-heritage-immersive 在「压暗 hero」「中文巨标题字重」两点上正相反，禁混用） | ✅ 自建验证（回填 5 条修正） |
-| `crimson-data-atlas.md` | 绛红数据图谱（文博/历史文化数据可视化首屏、信息图表式海报页，源公开视频抽帧提取） | ✅ 自建验证 |
-| `teal-solar-rings.md` | 黛青节令环谱（同心环点读交互/四季色数据编码，与 crimson-data-atlas 同系列） | ✅ 自建验证 |
 | `hall-touch-wall.md` | 展厅触控巨幕（待机生息+指尖直达双态签名交互，4K 远读字号阶梯，无 hover/无声/深底） | ✅ 自建验证 |
 
 基准卡 = 从真实优秀站点提取的令牌，尚未经自建验证；首次被单子使用时验收加倍严格，用后把状态改为 ✅ 并回填修正。
