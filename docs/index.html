@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>landing-craft · 高级美学落地页流水线</title>
+<meta name="description" content="把「做个好看的落地页」变成一条可重复的流水线：素材阶梯 → 工程级 spec → 单文件 HTML → Playwright 截图验收。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07080A; --ink:#FFFFFF; --accent:#FF6363;
+  --muted:rgba(255,255,255,0.6); --dim:rgba(255,255,255,0.38);
+  --hairline:rgba(255,255,255,0.10);
+  --btn-bg:#E6E6E6; --btn-ink:#2F3031;
+  --sans:"Inter",system-ui,-apple-system,"PingFang SC",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:var(--sans); font-weight:400; font-size:16px; line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(255,99,99,0.28)}
+/* ── 签名交互：hero 边缘氛围光（两层，pointer-events:none） ── */
+.glow{
+  position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+}
+.glow i{
+  position:absolute; top:0; left:0; width:100%; height:100%;
+  will-change:transform;
+}
+.glow .a{
+  background:radial-gradient(circle 50vw at 18% 30%, var(--accent) 0%, transparent 60%);
+  opacity:0.12;
+}
+.glow .b{
+  background:radial-gradient(circle 44vw at 82% 70%, #FFFFFF 0%, transparent 55%);
+  opacity:0.07;
+}
+/* ── 导航：悬浮玻璃胶囊 ── */
+nav{
+  position:fixed; top:22px; left:50%; transform:translateX(-50%); z-index:10;
+  display:flex; align-items:center; gap:26px;
+  padding:10px 22px; border-radius:999px;
+  background:rgba(7,8,10,0.55); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--hairline);
+  font-size:13px;
+}
+nav .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none}
+nav a{color:var(--muted);text-decoration:none;transition:color .2s}
+nav a:hover{color:var(--ink)}
+nav .brand{color:var(--ink);font-weight:600;letter-spacing:0.2px}
+main{position:relative;z-index:1}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+/* ── Hero：极致居中 ── */
+.hero{
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center;
+  padding:140px 32px 100px;
+}
+.eyebrow{
+  font-family:var(--mono); font-size:12px; letter-spacing:0.35em;
+  color:var(--accent); text-transform:uppercase; margin-bottom:28px;
+}
+h1{
+  font-weight:600; font-size:clamp(40px,6vw,64px); line-height:1.1;
+  letter-spacing:-0.02em; text-wrap:balance; margin-bottom:24px;
+}
+.tagline{
+  font-size:18px; color:var(--muted); max-width:560px; margin-bottom:44px;
+  text-wrap:balance;
+}
+.codeblock{
+  font-family:var(--mono); font-size:14px; line-height:1.8; text-align:left;
+  white-space:pre-wrap; word-break:break-all;
+  background:rgba(255,255,255,0.04); border:1px solid var(--hairline);
+  border-radius:10px; padding:18px 22px; max-width:640px; width:100%;
+  color:var(--muted);
+}
+.codeblock .p{color:var(--accent)}
+.codeblock .c{color:var(--dim)}
+.hero-links{margin-top:32px;display:flex;gap:32px;font-size:14px}
+.hero-links a{
+  color:var(--ink); text-decoration:none;
+  border-bottom:1px solid var(--dim); padding-bottom:2px;
+  transition:border-color .2s, color .2s;
+}
+.hero-links a:hover{border-color:var(--accent);color:var(--accent)}
+.hero-links a .arrow{color:var(--accent)}
+/* ── section 节奏 ── */
+section{padding:150px 0}
+.label{
+  font-weight:500; font-size:20px; letter-spacing:0.2px; margin-bottom:14px;
+}
+.label .no{color:var(--accent);font-family:var(--mono);font-size:13px;letter-spacing:0.1em;margin-right:14px}
+.section-sub{color:var(--muted);max-width:640px;margin-bottom:64px}
+/* ── 流水线五段 ── */
+.steps{border-top:1px solid var(--hairline)}
+.step{
+  display:grid; grid-template-columns:90px 220px 1fr; gap:32px;
+  padding:34px 0; border-bottom:1px solid var(--hairline); align-items:baseline;
+}
+.step .idx{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:0.15em}
+.step .name{font-weight:600;font-size:17px}
+.step .desc{color:var(--muted);font-size:15px}
+.step .desc b{color:var(--ink);font-weight:500}
+/* ── 13 卡画廊 ── */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.card{display:block;text-decoration:none;color:inherit}
+.card .shot{
+  border-radius:10px; border:1px solid var(--hairline); overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,0.5);
+  transition:transform .3s var(--ease), box-shadow .3s var(--ease);
+  background:#0D0F12;
+}
+.card img{width:100%;height:auto;display:block;aspect-ratio:8/5;object-fit:cover}
+.card:hover .shot{transform:translateY(-4px);box-shadow:0 32px 80px rgba(0,0,0,0.6)}
+.card .meta{padding:18px 4px 0}
+.card .cname{font-weight:600;font-size:16px;margin-bottom:6px}
+.card .cname .en{color:var(--dim);font-family:var(--mono);font-size:12px;font-weight:400;margin-left:10px;letter-spacing:0.05em;white-space:nowrap}
+.card .mood{color:var(--muted);font-size:13.5px;margin-bottom:10px}
+.card .sig,.card .ban{font-size:13px;line-height:1.65}
+.card .sig{color:var(--muted)}
+.card .sig b,.card .ban b{font-weight:500;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;margin-right:8px}
+.card .sig b{color:var(--accent)}
+.card .ban{color:var(--dim);margin-top:4px}
+.card .ban b{color:var(--muted)}
+/* ── 质量门与红线 ── */
+.gates{border-top:1px solid var(--hairline);padding-top:64px}
+.redline{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:56px}
+.redline .rl{border-top:1px solid var(--hairline);padding:22px 0 6px}
+.redline .rl h3{font-weight:600;font-size:16px;margin-bottom:8px}
+.redline .rl h3::before{
+  content:"";display:inline-block;width:8px;height:8px;
+  background:var(--accent);margin-right:12px;transform:translateY(-1px);
+}
+.redline .rl p{color:var(--muted);font-size:14.5px}
+.gate-params{
+  font-family:var(--mono);font-size:12.5px;color:var(--dim);letter-spacing:0.08em;
+  line-height:2.1;
+}
+.gate-params b{color:var(--muted);font-weight:400}
+/* ── footer ── */
+footer{
+  border-top:1px solid var(--hairline); padding:56px 0 64px;
+  display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;
+}
+footer .by{color:var(--muted);font-size:14px}
+footer .by a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--dim)}
+footer .by a:hover{color:var(--accent);border-color:var(--accent)}
+footer .params{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:0.12em;flex:none}
+/* ── reveal ── */
+.rv{opacity:0;transform:translateY(16px)}
+html.shot .rv,.rv.on{opacity:1;transform:none;transition:opacity .6s var(--ease),transform .6s var(--ease)}
+html.shot .rv{transition:none}
+@media (max-width:1080px){
+  .gallery{grid-template-columns:repeat(2,1fr)}
+  .step{grid-template-columns:70px 1fr;row-gap:6px}
+  .step .desc{grid-column:2}
+}
+@media (max-width:720px){
+  .gallery{grid-template-columns:1fr}
+  .redline{grid-template-columns:1fr}
+  section{padding:100px 0}
+  nav{gap:16px;padding:9px 16px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="glow" aria-hidden="true"><i class="a" id="glowA"></i><i class="b" id="glowB"></i></div>
+
+<nav>
+  <span class="dot"></span>
+  <span class="brand">landing-craft</span>
+  <a href="#pipeline">流水线</a>
+  <a href="#cards">方向卡</a>
+  <a href="#gates">质量门</a>
+  <a href="https://github.com/cielosummer-cyber/landing-craft" target="_blank" rel="noopener">GitHub</a>
+</nav>
+
+<main>
+<!-- ═══ 1 · HERO ═══ -->
+<header class="hero">
+  <div class="eyebrow rv">Agent Skill · MIT License</div>
+  <h1 class="rv">landing-craft</h1>
+  <p class="tagline rv">把「做个好看的落地页」变成一条可重复的流水线——设计意图写成精确参数，Agent 负责精确执行，人负责审美决策。</p>
+  <div class="codeblock rv"><span class="c"># 克隆后软链进 agent 技能目录即可用</span>
+<span class="p">$</span> git clone https://github.com/cielosummer-cyber/landing-craft.git
+<span class="p">$</span> ln -s "$PWD/landing-craft" ~/.agents/skills/landing-craft</div>
+  <div class="hero-links rv">
+    <a href="https://github.com/cielosummer-cyber/landing-craft" target="_blank" rel="noopener">GitHub 仓库 <span class="arrow">↗</span></a>
+    <a href="https://cielosummer-cyber.github.io/landing-craft/" target="_blank" rel="noopener">Pages 站点 <span class="arrow">↗</span></a>
+  </div>
+</header>
+
+<!-- ═══ 2 · 流水线五段 ═══ -->
+<section id="pipeline">
+  <div class="wrap">
+    <div class="label rv"><span class="no">01</span>流水线</div>
+    <p class="section-sub rv">五步固定流程，每一步有完成标准，不达标不往下走。先跑通，再定制。</p>
+    <div class="steps rv">
+      <div class="step">
+        <span class="idx">STEP 0</span>
+        <span class="name">定方向</span>
+        <span class="desc">从参考卡库挑气质最接近的一张卡，或按提取协议把用户给的参考冻成新卡。<b>禁忌栏写不出 = 还没看懂这个方向。</b></span>
+      </div>
+      <div class="step">
+        <span class="idx">STEP 1</span>
+        <span class="name">素材阶梯</span>
+        <span class="desc">CC 免费图库 → Ark 生图 → Ark 生视频 → codex 生图兜底 → 诚实 placeholder。<b>按顺序下，不许跳级，每张肉眼审核。</b></span>
+      </div>
+      <div class="step">
+        <span class="idx">STEP 2</span>
+        <span class="name">工程级 spec</span>
+        <span class="desc">资产清单 verbatim 路径 + 全部常量写死成数值 + 行为逐条可实现。<b>spec 里没有一个「高级感」这种不可执行的词。</b></span>
+      </div>
+      <div class="step">
+        <span class="idx">STEP 3</span>
+        <span class="name">单文件 HTML</span>
+        <span class="desc">按 spec 逐条实现，双击直开，外部依赖仅 Google Fonts 且必须带系统 fallback。<b>内置 ?shot=1：所有入场动画立即置完成态。</b></span>
+      </div>
+      <div class="step">
+        <span class="idx">STEP 4</span>
+        <span class="name">截图验收</span>
+        <span class="desc">shoot.mjs 出首屏/中段/全页三图 + console 错误报告，对照质量门清单逐项过。<b>0 pageerror + 评审放行，才许 open 给用户看。</b></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 3 · 方向卡画廊 ═══ -->
+<section id="cards">
+  <div class="wrap">
+    <div class="label rv"><span class="no">02</span>方向卡 · 13</div>
+    <p class="section-sub rv">每张卡是一个美学方向的冻结设计令牌：色板、字体配对、签名交互参数、禁忌。卡是语法书，不是课文。以下截图均来自各卡 demo 首屏实测（暗金奢华无 demo，为卡面令牌示意页）。</p>
+    <div class="gallery rv">
+
+      <div class="card">
+        <div class="shot"><img src="assets/cards/dark-tech-saas.jpg" alt="暗夜科技方向卡 demo 首屏：近黑底居中巨标题与终端键入动画" loading="lazy"></div>
+        <div class="meta">
+          <div class="cname">暗夜科技<span class="en">dark-tech-saas</span></div>
+          <div class="mood">近黑 · 精确 · 开发者工具 · 氛围光 · 速度感</div>
+          <div class="sig"><b>签名</b>hero 边缘氛围光跟手，两层径向光斑 lerp 0.05–0.08 缓慢偏移</div>
+          <div class="ban"><b>禁忌</b>禁均匀深蓝底 + 紫色霓虹 glow——近黑是有色相的 #07080A</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="shot"><img src="assets/cards/dark-gold-luxury.jpg" alt="暗金奢华方向卡卡面令牌示意页：Playfair 巨标题、spotlight 机制与五色令牌" loading="lazy"></div>
+        <div class="meta">
+          <div class="cname">暗金奢华<span class="en">dark-gold-luxury</span></div>
+          <div class="mood">暗场 · 金色机械 · 博物馆打光 · 编辑排版 · 克制</div>
+          <div class="sig"><b>签名</b>spotlight reveal：hero 图压暗 0.35，280px 光斑随指针点亮</div>
+          <div class="ban"><b>禁忌</b>禁第二个 accent 色——金只能有一个</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="shot"><img src="assets/cards/new-chinese-editorial.jpg" alt="新中式编辑风方向卡 demo 首屏：宣纸底宋体巨标题与 scroll-expand hero 图" loading="lazy"></div>
+        <div class="meta">
+          <div class="cname">新中式编辑风<span class="en">new-chinese-editorial</span></div>
+          <div class="mood">宣纸底 · 墨绿 · 大量留白 · 竖排细节 · 安静</div>
+          <div class="sig"><b>签名</b>hero 图 scroll-expand：38vw 居中小图随滚动展开至满幅</div>
+          <div class="ban"><b>禁忌</b>禁英文大标题喧宾夺主——中文是主角</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="shot"><img src="assets/cards/retro-dtc-consumer.jpg" alt="复古消费 DTC 方向卡 demo 首屏：奶油底复古衬线大字与产品罐" loading="lazy"></div>
+        <div class="meta">
+          <div class="cname">复古消费 DTC<span class="en">retro-dtc-consumer</span></div>
+          <div class="mood">奶油底 · 复古衬线 · 明快撞色 · 亲切 · 杂货铺感</div>
+          <div class="sig"><b>签名</b>产品罐视差漂浮：0.03 / 0.06 / 0.1 三档速率随滚动漂移</div>
+          <div class="ban"><b>禁忌</b>禁细瘦字体——这个方向的字必须「有肉」</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="shot"><img src="assets/cards/slow-magazine-editorial.jpg" alt="慢杂志 editorial 方向卡 demo 首屏：纯白底衬线大写标题与极窄单栏" loading="lazy"></div>
+        <div class="meta">
+          <div class="cname">慢杂志 editorial<span class="en">slow-magazine-editorial</span></div>
+          <div class="mood">纯白 · 衬线 · 大留白 · 美术馆 · 慢</div>
+          <div class="sig"><b>签名</b>图片揭示式入场：clip-path inset(8%) 收拢到 0，1s easeOutExpo</div>
+          <div class="ban"><b>禁忌</b>位移超过 24px 就破了「慢」</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="shot"><img src="assets/cards/experimental-studio.jpg" alt="实验工作室方向卡 demo 首屏：纯黑底 grotesque 巨型白字三行堆叠" loading="lazy"></div>
+        <div class="meta">
+          <div class="cname">实验工作室<span class="en">experimental-studio</span></div>
+          <div class="mood">纯黑 · 白字 · grotesque · 解码动画 · 作品即内容</div>
+          <div class="sig"><b>签名</b>text scramble：标题逐行从随机字符解码到目标文案</div>
+          <div class="ban"><b>禁忌</b>禁任何装饰元素——这个方向的结构本身就是表达</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="shot"><img src="assets/cards/deep-space-atlas.jpg" alt="深空星图方向卡 demo 首屏：深空黑底宋体巨标题与体积星云着色器" loading="lazy"></div>
+        <div class="meta">
+          <div class="cname">深空星图<span class="en">deep-space-atlas</span></div>
+          <div class="mood">深空 · 发光节点 · 宋体衬线 · 语义用色 · 克制</div>
+          <div class="sig"><b>签名</b>WebGL2 体积星云着色器 + 三层视差星野 + 连续镜头漂移</div>
+          <div class="ban"><b>禁忌</b>平面点线 canvas 一律不够格——必须是体积星云与空间景深</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="shot"><img src="assets/cards/archive-dossier.jpg" alt="卷宗档案方向卡 demo 首屏：档案纸底墨带反白巨标题与全格线令牌表" loading="lazy"></div>
+        <div class="meta">
+          <div class="cname">卷宗档案<span class="en">archive-dossier</span></div>
+          <div class="mood">档案纸 · 浓墨 · 印泥红 · 表格线 · 公文细节</div>
+          <div class="sig"><b>签名</b>红方章盖章入场砸落 + 涂黑条 hover 解密揭示</div>
+          <div class="ban"><b>禁忌</b>红只许出现在章/戳/涂黑条——红色泛滥 = 春联，不是卷宗</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="shot"><img src="assets/cards/digital-heritage-immersive.jpg" alt="数字非遗方向卡 demo 首屏：近黑底朱砂宋体巨标题与文物聚光" loading="lazy"></div>
+        <div class="meta">
+          <div class="cname">数字非遗 · 暗夜流光<span class="en">digital-heritage-immersive</span></div>
+          <div class="mood">暗夜 · 文物聚光 · 沉浸影像 · 一个朱砂 · 呼吸留白</div>
+          <div class="sig"><b>签名</b>文物聚光 spotlight：观众用手指「点亮」压暗的展品</div>
+          <div class="ban"><b>禁忌</b>禁传统纹样无层次铺满——纹样永远不当壁纸</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="shot"><img src="assets/cards/hairline-archive-portal.jpg" alt="细笔档案门户方向卡 demo 首屏：纯黑底极细白字与四等宽分库标签条" loading="lazy"></div>
+        <div class="meta">
+          <div class="cname">细笔档案门户<span class="en">hairline-archive-portal</span></div>
+          <div class="mood">纯黑 · 极细笔画 · 幽灵水印 · 门户索引 · 人工择路</div>
+          <div class="sig"><b>签名</b>361px 巨型幽灵水印随分库切换走位，opacity 只有 0.03</div>
+          <div class="ban"><b>禁忌</b>禁加粗——「细」是这张卡唯一的贵气来源</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="shot"><img src="assets/cards/crimson-data-atlas.jpg" alt="绛红数据图谱方向卡 demo 首屏：深绛底玫红环形仪轨与描金注解" loading="lazy"></div>
+        <div class="meta">
+          <div class="cname">绛红数据图谱<span class="en">crimson-data-atlas</span></div>
+          <div class="mood">暗夜锦缎 · 玫红描金 · 环形仪轨 · 密集注解 · 图谱感</div>
+          <div class="sig"><b>签名</b>圆镜扫描构建：环形图谱按固定编排出生长成，8–12s</div>
+          <div class="ban"><b>禁忌</b>禁大留白慢节奏——这个方向靠密度、注解与仪轨感取胜</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="shot"><img src="assets/cards/teal-solar-rings.jpg" alt="黛青节令环谱方向卡 demo 首屏：黛青底同心环谱与四季色节点" loading="lazy"></div>
+        <div class="meta">
+          <div class="cname">黛青节令环谱<span class="en">teal-solar-rings</span></div>
+          <div class="mood">黛青夜航 · 四时流转 · 同心环谱 · 可点读 · 册页藏书票</div>
+          <div class="sig"><b>签名</b>同心环谱点读：内环分段弧长按数据分配，节点可点</div>
+          <div class="ban"><b>禁忌</b>禁把季色当纯装饰——季色是数据，不是花边</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="shot"><img src="assets/cards/hall-touch-wall.jpg" alt="展厅触控巨幕方向卡 demo 首屏：4K 星野巨幕与指尖直达详情面板" loading="lazy"></div>
+        <div class="meta">
+          <div class="cname">展厅触控巨幕<span class="en">hall-touch-wall</span></div>
+          <div class="mood">远观仪式 · 巨幕星野 · 指尖直达 · 待机生息 · 低存在感&nbsp;HUD</div>
+          <div class="sig"><b>签名</b>待机自主编排 + 触摸即刻打断的双态：涟漪落点 + 常驻大字面板</div>
+          <div class="ban"><b>禁忌</b>禁把桌面 dashboard 等比放大冒充大屏——交互模型必须重做</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 4 · 质量门与红线 ═══ -->
+<section id="gates" style="padding-top:0">
+  <div class="wrap">
+    <div class="label rv"><span class="no">03</span>质量门与红线</div>
+    <p class="section-sub rv">截图出来后逐项过，任何一项不过 = 回去改，不交付。两条红线写在最前面。</p>
+    <div class="gates rv">
+      <div class="redline">
+        <div class="rl">
+          <h3>学语法，不抄课文</h3>
+          <p>从参考站只拿走令牌级语法——色板、字体配对、签名交互机制；布局结构、文案、图像、段落顺序必须是自己的。hero 构图一眼可认出同源即打回。</p>
+        </div>
+        <div class="rl">
+          <h3>参考卡不含内容资产</h3>
+          <p>卡里只有设计语法：色值、字阶、参数、禁忌。真实项目的文案、照片、品牌资产一律不进卡——卡可以被任何单子复用，内容不行。</p>
+        </div>
+      </div>
+      <div class="gate-params">
+        <b>PAGEERROR = 0</b> · SHOT=1 无隐藏态残留 · 图片全本地无 404 · IMG 同时写 WIDTH:100% + HEIGHT:AUTO<br>
+        代码块显式 WHITE-SPACE:PRE-WRAP · 入场动画只有一场编排好的 PAGE LOAD · 反 SLOP：无紫渐变 / 无 EMOJI 图标 / 无编造 STATS
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 5 · FOOTER ═══ -->
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;width:100%">
+    <div class="by">
+      by 周颖 <a href="https://github.com/cielosummer-cyber" target="_blank" rel="noopener">@cielosummer-cyber</a> · MIT License · <a href="https://github.com/cielosummer-cyber/landing-craft" target="_blank" rel="noopener">github.com/cielosummer-cyber/landing-craft</a>
+    </div>
+    <div class="params">GLOW LERP 0.06 · OPACITY ≤0.14 · RADIUS 44–60VW · BG #07080A · ACCENT #FF6363</div>
+  </div>
+</footer>
+</main>
+
+<script>
+(function(){
+  var SHOT = new URLSearchParams(location.search).has('shot');
+  var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (SHOT) document.documentElement.classList.add('shot');
+
+  /* ── reveal 编排：hero page load 一场 + section IO fade-up 一次 ── */
+  var rv = Array.prototype.slice.call(document.querySelectorAll('.rv'));
+  if (SHOT || RM) {
+    rv.forEach(function(el){ el.classList.add('on'); });
+  } else {
+    var hero = rv.filter(function(el){ return el.closest('.hero'); });
+    var rest = rv.filter(function(el){ return !el.closest('.hero'); });
+    hero.forEach(function(el, i){ setTimeout(function(){ el.classList.add('on'); }, 120 + i * 80); });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.2 });
+    rest.forEach(function(el){ io.observe(el); });
+  }
+
+  /* ── 签名交互：氛围光跟手（lerp 0.06，A 顺向 / B 反向） ── */
+  if (!SHOT && !RM) {
+    var a = document.getElementById('glowA'), b = document.getElementById('glowB');
+    var tx = 0, ty = 0, x = 0, y = 0, LERP = 0.06;
+    addEventListener('mousemove', function(e){
+      tx = e.clientX - innerWidth / 2;
+      ty = e.clientY - innerHeight / 2;
+    });
+    (function loop(){
+      x += (tx - x) * LERP;
+      y += (ty - y) * LERP;
+      a.style.transform = 'translate3d(' + (x * 0.06) + 'px,' + (y * 0.06) + 'px,0)';
+      b.style.transform = 'translate3d(' + (x * -0.04) + 'px,' + (y * -0.04) + 'px,0)';
+      requestAnimationFrame(loop);
+    })();
+  }
+})();
+</script>
+</body>
+</html>
