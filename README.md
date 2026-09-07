@@ -72,6 +72,10 @@ node（≥18，shoot.mjs 用到全局 fetch）· ffmpeg（视频抽帧）· Play
 - 新方向沉淀成卡时必须配最小 demo 与 PROMPT，禁忌栏必填
 - 参考卡提取自公开站点的设计语法（色板/排版/交互机制），不含亦不得复制其内容资产（图像、文案、商标）
 
+## 贡献
+
+欢迎参考卡与验证修正回填——卡的贡献单元、四件套门槛与验收装置见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
 ## License
 
 MIT · by zhou ying（@cielosummer-cyber）
