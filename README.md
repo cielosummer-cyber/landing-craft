@@ -1,4 +1,4 @@
-# 落地工坊 Landing Atelier · 高级美学落地页流水线
+# 落地工坊 Landing Atelier · 高级美学落地页工作流
 
 ![形态](https://img.shields.io/badge/%E5%BD%A2%E6%80%81-Agent%20Skill-0f6fff)
 ![验收](https://img.shields.io/badge/%E9%AA%8C%E6%94%B6-Playwright-45a17b)
@@ -74,4 +74,4 @@ node（≥18，shoot.mjs 用到全局 fetch）· ffmpeg（视频抽帧）· Play
 
 ## License
 
-MIT · by 周颖（@cielosummer-cyber）
+MIT · by zhou ying（@cielosummer-cyber）
