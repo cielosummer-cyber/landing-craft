@@ -1,9 +1,9 @@
 ---
-name: landing-craft
+name: landing-atelier
 description: 高级美学落地页固定流水线：素材阶梯（CC 免费图库 → codex image_gen 生图兜底 → 诚实 placeholder）→ 工程级设计 spec → 单文件 HTML 构建 → Playwright 截图验收。当用户要做 landing page / 落地页 / 产品页 / 品牌官网 / 活动页，或要「高级感」「premium」「美学级」的网页时使用。零边际成本，全部本地完成。
 ---
 
-# landing-craft · 高级美学落地页流水线
+# 落地工坊 Landing Atelier · 高级美学落地页流水线
 
 把「做个好看的落地页」变成一条可重复的流水线。核心认知：**值钱的是把设计意图写成精确参数，工具层全是可替代的免费件**——Agent 负责精确执行，人负责审美决策。
 

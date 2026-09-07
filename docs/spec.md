@@ -1,14 +1,14 @@
-# landing-craft 官方展示站 — Landing Page · 工程级设计规格
+# 落地工坊（Landing Atelier）官方展示站 — Landing Page · 工程级设计规格
 
 ## 品牌与气质
-- 品牌：landing-craft（真实开源项目，MIT，作者 周颖 @cielosummer-cyber）— 高级美学落地页固定流水线 agent skill
+- 品牌：landing-atelier（真实开源项目，MIT，作者 周颖 @cielosummer-cyber）— 高级美学落地页固定流水线 agent skill
 - 气质关键词：近黑、精确、开发者工具、氛围光、速度感（方向卡 `dark-tech-saas`，本站即该卡的 dogfood 证据）
 - 受众距离：1m 笔记本；视觉温度：安静、精确
 - 单 accent 色：`#FF6363`（Raycast 红，贯穿全场，不发明第二个）
 - 签名交互：hero 边缘氛围光跟手——两层 radial-gradient 光斑随鼠标缓慢偏移，rAF lerp 平滑
 
 ## 内容结构（5 段）
-1. **Hero**：整段极致居中。mono eyebrow → 64px 级巨标题「landing-craft」→ 中文定位一句 → 安装命令代码块（ln -s 软链）→ GitHub / Pages 两个文字链。签名交互两层氛围光在 hero 边缘跟手
+1. **Hero**：整段极致居中。mono eyebrow → 64px 级巨标题「landing-atelier」→ 中文定位一句 → 安装命令代码块（ln -s 软链）→ GitHub / Pages 两个文字链。签名交互两层氛围光在 hero 边缘跟手
 2. **流水线五段**：20px Label 题注「流水线」+ 五步（0 定方向 / 1 素材阶梯 / 2 工程级 spec / 3 单文件 HTML / 4 截图验收），每步一句可执行要点，参数即文案；分隔用 hairline 不用卡片
 3. **方向卡画廊（页面主体）**：20px Label 题注「方向卡 · 13」+ 3 列 grid；每卡 = demo 截图（10px 圆角 + 0.1 alpha 细白边 + 深投影悬浮）+ 方向名 + 气质关键词 + 签名交互一行 + 禁忌一句
 4. **质量门与红线**：两条红线（学语法不抄课文 / 参考卡只提取设计语法不含内容资产）+ 质量门硬指标一行 mono 参数

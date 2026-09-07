@@ -1,4 +1,4 @@
-# landing-craft · 高级美学落地页流水线
+# 落地工坊 Landing Atelier · 高级美学落地页流水线
 
 ![形态](https://img.shields.io/badge/%E5%BD%A2%E6%80%81-Agent%20Skill-0f6fff)
 ![验收](https://img.shields.io/badge/%E9%AA%8C%E6%94%B6-Playwright-45a17b)
@@ -8,7 +8,7 @@
 
 把「做个好看的落地页」变成一条可重复的流水线。核心认知：**值钱的是把设计意图写成精确参数，工具层全是可替代的免费件**——Agent 负责精确执行，人负责审美决策。零边际成本，全部本地完成。
 
-**展示站（13 张参考卡的 demo 画廊）：https://cielosummer-cyber.github.io/landing-craft/**
+**展示站（13 张参考卡的 demo 画廊）：https://cielosummer-cyber.github.io/landing-atelier/**
 
 ## 流水线五段
 
@@ -23,10 +23,10 @@
 作为 agent skill 使用：把本目录软链接（推荐，保持单一真相源）或复制到 agent 的 skills 目录：
 
 ```bash
-ln -s "$PWD" ~/.agents/skills/landing-craft   # 或 ~/.codex/skills/ 等
+ln -s "$PWD" ~/.agents/skills/landing-atelier   # 或 ~/.codex/skills/ 等
 ```
 
-之后对 agent 说「用 landing-craft 做个 XX 落地页」即可触发。
+之后对 agent 说「用 landing-atelier 做个 XX 落地页」即可触发。
 
 ### 脚本依赖与降级
 

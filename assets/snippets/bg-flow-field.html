@@ -18,7 +18,7 @@
    FADE_ALPHA     0.015   每帧底色覆盖不透明度，越小拖尾越长
    SHOT_PREROLL   1500    shot 模式同步预滚帧数
 
- ?shot=1 确定性终态规则（landing-craft 硬约定）：
+ ?shot=1 确定性终态规则（landing-atelier 硬约定）：
    - URL 带 shot=1 时：Math.random 换成 mulberry32 固定种子 PRNG，
      同步预滚 SHOT_PREROLL 帧（等价于 t≈1.2 的流场时刻），画完即停，
      不启动 rAF。每次截图像素级一致。

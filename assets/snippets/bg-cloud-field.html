@@ -20,7 +20,7 @@
                注意必须用 GPU 实测选点——CPU 端 Math.sin 算的 hash
                和 GPU sin() 在大参数下精度不同，CPU 预测会落空。
 
- ?shot=1 确定性终态规则（landing-craft 硬约定）：
+ ?shot=1 确定性终态规则（landing-atelier 硬约定）：
    - URL 带 shot=1 时：u_time 固定 SHOT_T、鼠标固定画面中心 (0.5,0.5)，
      渲染一帧后停手，不进 rAF。着色器无随机输入，截图像素级一致。
    - 正常模式从 0 计时、鼠标视差生效。
